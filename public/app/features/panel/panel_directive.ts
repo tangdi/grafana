@@ -20,6 +20,7 @@ var panelTemplate = `
       </span>
 
       <div class="panel-title-container drag-handle" panel-menu></div>
+      <div class="panel-drilldown" panel-drilldown></div>
     </div>
 
     <div class="panel-content">

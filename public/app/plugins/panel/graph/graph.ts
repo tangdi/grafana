@@ -41,6 +41,8 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
       var tooltip = new GraphTooltip(elem, dashboard, scope, function() {
         return sortedSeries;
       });
+      var linkSrv = ctrl.$injector.get('linkSrv');
+      var templateSrv = ctrl.$injector.get('templateSrv');
 
       // panel events
       ctrl.events.on('panel-teardown', () => {
@@ -423,7 +425,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
       function addXHistogramAxis(options, bucketSize) {
         let ticks, min, max;
 
-        if (data.length) {
+        if (data.length && bucketSize) {
           ticks = _.map(data[0].data, point => point[0]);
 
           // Expand ticks for pretty view
@@ -622,6 +624,62 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
             // scope.$apply(() => {
             //   eventManager.updateTime({from: pos.x, to: null});
             // });
+          }
+        }
+
+        var panel = ctrl.panel;
+        var targets = panel.targets;
+
+        var sIndex = item.seriesIndex >= targets.length? 0 : item.seriesIndex;
+
+        if (item && panel && targets && targets[sIndex] && panel.targets[sIndex].drilldown) {
+          var separators = " ";
+          var alias = item.series.alias.split(separators);
+          var fromTimestamp =  moment(new Date(item.datapoint[0]));
+          var toTimestamp = moment(new Date(item.datapoint[0] + item.series.stats.timeStep));
+          var format = panel.targets[sIndex].drilldown.format;
+
+          var fromStr;
+          var toStr;
+
+          if (format){
+            fromStr = fromTimestamp.format(format);
+            toStr = toTimestamp.utc().format(format);
+          } else {
+            fromStr = fromTimestamp.toISOString();
+            toStr = toTimestamp.toISOString();
+          }
+
+          var url = panel.targets[sIndex].drilldown.url;
+          if (alias && alias.length > 0){
+            for (var index in alias){
+              url = url.replace(new RegExp("@alias"+index, 'g'),encodeURIComponent(alias[index]));
+            }
+          }
+
+          var scopedVars = {};
+
+          scopedVars['from'] = fromStr;
+          scopedVars['to'] = toStr;
+
+          templateSrv.fillVariableValuesForUrl(scopedVars);
+
+          //remove duplicates vars
+          if (scopedVars){
+            for (var varName in scopedVars){
+              if (url.indexOf(varName+"=")>0){
+                 delete scopedVars[varName];
+              }
+            }
+            url = linkSrv.addParamsToUrl(url, scopedVars);
+          }
+
+          var targetBlank = panel.targets[sIndex].drilldown.targetBlank;
+
+          if (targetBlank) {
+            window.open(url, '_blank');
+          } else {
+            window.open(url, '_self');
           }
         }
       });

@@ -1,31 +1,43 @@
 <query-editor-row query-ctrl="ctrl" can-collapse="true">
 
-	<div class="gf-form-inline">
-		<div class="gf-form gf-form--grow">
-			<label class="gf-form-label query-keyword width-7">Query</label>
-			<input type="text" class="gf-form-input" ng-model="ctrl.target.query" spellcheck='false' placeholder="Lucene query" ng-blur="ctrl.refresh()">
-		</div>
-		<div class="gf-form max-width-15">
-			<label class="gf-form-label query-keyword">Alias</label>
-			<input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="alias patterns" ng-blur="ctrl.refresh()">
-		</div>
-	</div>
+  <div class="gf-form-inline">
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label query-keyword width-7">Query</label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.target.query" spellcheck='false' placeholder="Lucene query" ng-blur="ctrl.refresh()">
+    </div>
+    <div class="gf-form max-width-15">
+      <label class="gf-form-label query-keyword">Alias</label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="alias patterns" ng-blur="ctrl.refresh()">
+    </div>
+  </div>
 
-	<div ng-repeat="agg in ctrl.target.metrics">
-		<elastic-metric-agg
-			target="ctrl.target" index="$index"
-			get-fields="ctrl.getFields($fieldType)"
-			on-change="ctrl.queryUpdated()"
-			es-version="ctrl.esVersion">
-		</elastic-metric-agg>
-	</div>
+  <div ng-repeat="agg in ctrl.target.metrics">
+    <elastic-metric-agg
+      target="ctrl.target" index="$index"
+      get-fields="ctrl.getFields($fieldType)"
+      on-change="ctrl.queryUpdated()"
+      es-version="ctrl.esVersion">
+    </elastic-metric-agg>
+  </div>
 
-	<div ng-repeat="agg in ctrl.target.bucketAggs">
-		<elastic-bucket-agg
-			target="ctrl.target" index="$index"
-			get-fields="ctrl.getFields($fieldType)"
-			on-change="ctrl.queryUpdated()">
-		</elastic-bucket-agg>
-	</div>
+  <div ng-repeat="agg in ctrl.target.bucketAggs">
+    <elastic-bucket-agg
+      target="ctrl.target" index="$index"
+      get-fields="ctrl.getFields($fieldType)"
+      on-change="ctrl.queryUpdated()">
+    </elastic-bucket-agg>
+  </div>
+
+  <div class="gf-form-inline" ng-show="ctrl.panel.type!='grafana-piechart-panel'">
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label query-keyword width-7">Drilldown</label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.target.drilldown.url" spellcheck='false' placeholder="Drilldown link" ng-blur="ctrl.refresh()">
+    </div>
+    <div class="gf-form max-width-25">
+      <label class="gf-form-label query-keyword">Date Format</label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.target.drilldown.format" spellcheck='false' placeholder="default ISO_8601: YYYY-MM-DDTHH:mm:ss.SSSZ" ng-blur="ctrl.refresh()">
+    </div>
+    <gf-form-switch class="gf-form" label-class="width-10" label="Open in new tab " checked="ctrl.target.drilldown.targetBlank"></gf-form-switch>
+  </div>
 
 </query-editor-row>
