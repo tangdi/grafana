@@ -15,7 +15,7 @@ weight = 1
 
 Description | Download
 ------------ | -------------
-Stable for Debian-based Linux | [4.2.0 (x86-64 deb)](https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.2.0_amd64.deb)
+Stable for Debian-based Linux | [grafana_4.3.0_amd64.deb](https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.3.0_amd64.deb)
 
 Read [Upgrading Grafana]({{< relref "installation/upgrading.md" >}}) for tips and guidance on updating an existing
 installation.
@@ -27,6 +27,16 @@ wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.2.0_a
 sudo apt-get install -y adduser libfontconfig
 sudo dpkg -i grafana_4.2.0_amd64.deb
 ```
+
+<!--
+## Install Beta
+
+```bash
+wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.3.0-beta1_amd64.deb
+sudo apt-get install -y adduser libfontconfig
+sudo dpkg -i grafana_4.3.0-beta1_amd64.deb
+```
+-->
 
 ## APT Repository
 

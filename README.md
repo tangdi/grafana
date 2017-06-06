@@ -17,6 +17,7 @@ Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
 - [What's New in Grafana 4.0](http://docs.grafana.org/guides/whats-new-in-v4/)
 - [What's New in Grafana 4.1](http://docs.grafana.org/guides/whats-new-in-v4-1/)
 - [What's New in Grafana 4.2](http://docs.grafana.org/guides/whats-new-in-v4-2/)
+- [What's New in Grafana 4.3](http://docs.grafana.org/guides/whats-new-in-v4-3/)
 
 ## Features
 
@@ -145,8 +146,7 @@ Create a custom.ini in the conf directory to override default configuration opti
 You only need to add the options you want to override. Config files are applied in the order of:
 
 1. grafana.ini
-2. dev.ini (if found)
-3. custom.ini
+1. custom.ini
 
 ## Create a pull request
 Before or after you create a pull request, sign the [contributor license agreement](http://docs.grafana.org/project/cla/).

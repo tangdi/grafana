@@ -38,7 +38,6 @@ let panelDefaults = {
     splitFactor: null,
     min: null,
     max: null,
-    removeZeroValues: false
   },
   xBucketSize: null,
   xBucketNumber: null,
@@ -46,7 +45,6 @@ let panelDefaults = {
   yBucketNumber: null,
   tooltip: {
     show: true,
-    seriesStat: false,
     showHistogram: false
   },
   highlightCards: true
