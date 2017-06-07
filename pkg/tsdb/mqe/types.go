@@ -7,8 +7,8 @@ import (
 
 	"regexp"
 
-	"github.com/grafana/grafana/pkg/log"
-	"github.com/grafana/grafana/pkg/tsdb"
+	"github.com/yinzhiqiang/grafana/pkg/log"
+	"github.com/yinzhiqiang/grafana/pkg/tsdb"
 )
 
 type Metric struct {

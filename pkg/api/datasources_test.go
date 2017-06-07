@@ -7,12 +7,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/grafana/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/models"
 	macaron "gopkg.in/macaron.v1"
 
 	"github.com/go-macaron/session"
-	"github.com/grafana/grafana/pkg/bus"
-	"github.com/grafana/grafana/pkg/middleware"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	"github.com/yinzhiqiang/grafana/pkg/middleware"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

@@ -8,7 +8,7 @@ import (
 
 	"io/ioutil"
 
-	"github.com/grafana/grafana/pkg/components/null"
+	"github.com/yinzhiqiang/grafana/pkg/components/null"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

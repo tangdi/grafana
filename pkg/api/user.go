@@ -1,11 +1,11 @@
 package api
 
 import (
-	"github.com/grafana/grafana/pkg/bus"
-	"github.com/grafana/grafana/pkg/middleware"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/setting"
-	"github.com/grafana/grafana/pkg/util"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	"github.com/yinzhiqiang/grafana/pkg/middleware"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/util"
 )
 
 // GET /api/user  (current authenticated user)

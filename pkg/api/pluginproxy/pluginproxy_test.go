@@ -3,11 +3,11 @@ package pluginproxy
 import (
 	"testing"
 
-	"github.com/grafana/grafana/pkg/bus"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/plugins"
-	"github.com/grafana/grafana/pkg/setting"
-	"github.com/grafana/grafana/pkg/util"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/plugins"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/util"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

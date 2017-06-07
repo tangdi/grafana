@@ -7,11 +7,11 @@ import (
 	"path"
 	"strings"
 
-	"github.com/grafana/grafana/pkg/components/simplejson"
-	"github.com/grafana/grafana/pkg/log"
-	"github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/setting"
-	"github.com/grafana/grafana/pkg/tsdb"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
+	"github.com/yinzhiqiang/grafana/pkg/log"
+	"github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/tsdb"
 
 	"golang.org/x/net/context/ctxhttp"
 )

@@ -1,9 +1,9 @@
 package api
 
 import (
-	"github.com/grafana/grafana/pkg/bus"
-	"github.com/grafana/grafana/pkg/middleware"
-	m "github.com/grafana/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	"github.com/yinzhiqiang/grafana/pkg/middleware"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
 )
 
 // POST /api/org/users

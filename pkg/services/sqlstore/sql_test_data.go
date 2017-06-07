@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/grafana/grafana/pkg/bus"
-	m "github.com/grafana/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
 )
 
 func init() {

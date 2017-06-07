@@ -4,10 +4,10 @@ import (
 	"errors"
 
 	"crypto/subtle"
-	"github.com/grafana/grafana/pkg/bus"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/setting"
-	"github.com/grafana/grafana/pkg/util"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/util"
 )
 
 var (

@@ -1,6 +1,6 @@
 package metrics
 
-import "github.com/grafana/grafana/pkg/setting"
+import "github.com/yinzhiqiang/grafana/pkg/setting"
 
 type MetricPublisher interface {
 	Publish(metrics []Metric)

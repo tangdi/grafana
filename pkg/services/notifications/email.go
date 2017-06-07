@@ -1,8 +1,8 @@
 package notifications
 
 import (
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/setting"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
 )
 
 type Message struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/grafana/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/models"
 )
 
 type Executor interface {

@@ -16,7 +16,7 @@ import (
 	"github.com/inconshreveable/log15"
 	"github.com/inconshreveable/log15/term"
 
-	"github.com/grafana/grafana/pkg/util"
+	"github.com/yinzhiqiang/grafana/pkg/util"
 )
 
 var Root log15.Logger

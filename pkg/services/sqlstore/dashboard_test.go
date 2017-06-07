@@ -6,9 +6,9 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 
 	"github.com/gosimple/slug"
-	"github.com/grafana/grafana/pkg/components/simplejson"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/services/search"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/services/search"
 )
 
 func insertTestDashboard(title string, orgId int64, tags ...interface{}) *m.Dashboard {

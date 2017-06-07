@@ -4,12 +4,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/grafana/grafana/pkg/bus"
-	"github.com/grafana/grafana/pkg/log"
-	"github.com/grafana/grafana/pkg/metrics"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/services/alerting"
-	"github.com/grafana/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	"github.com/yinzhiqiang/grafana/pkg/log"
+	"github.com/yinzhiqiang/grafana/pkg/metrics"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/services/alerting"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
 )
 
 func init() {

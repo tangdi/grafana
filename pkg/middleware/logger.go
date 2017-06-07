@@ -19,8 +19,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/grafana/grafana/pkg/metrics"
-	"github.com/grafana/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/metrics"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
 	"gopkg.in/macaron.v1"
 )
 

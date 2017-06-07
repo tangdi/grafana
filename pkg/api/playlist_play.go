@@ -4,11 +4,11 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/grafana/grafana/pkg/api/dtos"
-	"github.com/grafana/grafana/pkg/bus"
-	_ "github.com/grafana/grafana/pkg/log"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/services/search"
+	"github.com/yinzhiqiang/grafana/pkg/api/dtos"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	_ "github.com/yinzhiqiang/grafana/pkg/log"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/services/search"
 )
 
 func populateDashboardsById(dashboardByIds []int64, dashboardIdOrder map[int64]int) (dtos.PlaylistDashboardsSlice, error) {

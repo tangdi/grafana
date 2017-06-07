@@ -7,8 +7,8 @@ import (
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
-	"github.com/grafana/grafana/pkg/setting"
-	"github.com/grafana/grafana/pkg/util"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/util"
 )
 
 type BasicUserInfo struct {

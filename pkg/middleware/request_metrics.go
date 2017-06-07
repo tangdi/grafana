@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/grafana/grafana/pkg/metrics"
+	"github.com/yinzhiqiang/grafana/pkg/metrics"
 	"gopkg.in/macaron.v1"
 )
 

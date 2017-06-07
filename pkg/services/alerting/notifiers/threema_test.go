@@ -3,9 +3,9 @@ package notifiers
 import (
 	"testing"
 
-	"github.com/grafana/grafana/pkg/components/simplejson"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/services/alerting"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/services/alerting"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

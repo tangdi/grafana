@@ -3,9 +3,9 @@ package mqe
 import (
 	"testing"
 
-	"github.com/grafana/grafana/pkg/components/simplejson"
-	"github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/tsdb"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
+	"github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/tsdb"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

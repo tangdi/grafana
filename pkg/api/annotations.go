@@ -1,9 +1,9 @@
 package api
 
 import (
-	"github.com/grafana/grafana/pkg/api/dtos"
-	"github.com/grafana/grafana/pkg/middleware"
-	"github.com/grafana/grafana/pkg/services/annotations"
+	"github.com/yinzhiqiang/grafana/pkg/api/dtos"
+	"github.com/yinzhiqiang/grafana/pkg/middleware"
+	"github.com/yinzhiqiang/grafana/pkg/services/annotations"
 )
 
 func GetAnnotations(c *middleware.Context) Response {

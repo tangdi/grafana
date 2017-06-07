@@ -3,7 +3,7 @@ package metrics
 import (
 	"testing"
 
-	"github.com/grafana/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
 
 	. "github.com/smartystreets/goconvey/convey"
 )

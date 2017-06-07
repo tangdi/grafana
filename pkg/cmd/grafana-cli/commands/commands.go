@@ -6,9 +6,9 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/fatih/color"
-	"github.com/grafana/grafana/pkg/cmd/grafana-cli/logger"
-	"github.com/grafana/grafana/pkg/services/sqlstore"
-	"github.com/grafana/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/cmd/grafana-cli/logger"
+	"github.com/yinzhiqiang/grafana/pkg/services/sqlstore"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
 )
 
 func runDbCommand(command func(commandLine CommandLine) error) func(context *cli.Context) {

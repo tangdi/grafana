@@ -4,12 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/grafana/grafana/pkg/bus"
-	"github.com/grafana/grafana/pkg/components/null"
-	"github.com/grafana/grafana/pkg/components/simplejson"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/services/alerting"
-	"github.com/grafana/grafana/pkg/tsdb"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	"github.com/yinzhiqiang/grafana/pkg/components/null"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/services/alerting"
+	"github.com/yinzhiqiang/grafana/pkg/tsdb"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

@@ -5,15 +5,15 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/grafana/grafana/pkg/api/dtos"
-	"github.com/grafana/grafana/pkg/bus"
-	"github.com/grafana/grafana/pkg/components/simplejson"
-	"github.com/grafana/grafana/pkg/metrics"
-	"github.com/grafana/grafana/pkg/middleware"
-	"github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/tsdb"
-	"github.com/grafana/grafana/pkg/tsdb/testdata"
-	"github.com/grafana/grafana/pkg/util"
+	"github.com/yinzhiqiang/grafana/pkg/api/dtos"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
+	"github.com/yinzhiqiang/grafana/pkg/metrics"
+	"github.com/yinzhiqiang/grafana/pkg/middleware"
+	"github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/tsdb"
+	"github.com/yinzhiqiang/grafana/pkg/tsdb/testdata"
+	"github.com/yinzhiqiang/grafana/pkg/util"
 )
 
 // POST /api/tsdb/query

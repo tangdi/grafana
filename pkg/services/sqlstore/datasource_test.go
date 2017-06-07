@@ -7,8 +7,8 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/services/sqlstore/sqlutil"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/services/sqlstore/sqlutil"
 )
 
 func InitTestDB(t *testing.T) {

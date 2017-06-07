@@ -9,10 +9,10 @@ import (
 
 	"net/http"
 
-	"github.com/grafana/grafana/pkg/components/null"
-	"github.com/grafana/grafana/pkg/log"
-	"github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/tsdb"
+	"github.com/yinzhiqiang/grafana/pkg/components/null"
+	"github.com/yinzhiqiang/grafana/pkg/log"
+	"github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/tsdb"
 	"github.com/prometheus/client_golang/api/prometheus"
 	pmodel "github.com/prometheus/common/model"
 )

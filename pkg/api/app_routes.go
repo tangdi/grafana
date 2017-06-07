@@ -8,12 +8,12 @@ import (
 
 	"gopkg.in/macaron.v1"
 
-	"github.com/grafana/grafana/pkg/api/pluginproxy"
-	"github.com/grafana/grafana/pkg/log"
-	"github.com/grafana/grafana/pkg/middleware"
-	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/plugins"
-	"github.com/grafana/grafana/pkg/util"
+	"github.com/yinzhiqiang/grafana/pkg/api/pluginproxy"
+	"github.com/yinzhiqiang/grafana/pkg/log"
+	"github.com/yinzhiqiang/grafana/pkg/middleware"
+	m "github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/plugins"
+	"github.com/yinzhiqiang/grafana/pkg/util"
 )
 
 var pluginProxyTransport = &http.Transport{

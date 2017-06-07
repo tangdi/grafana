@@ -3,8 +3,8 @@ package influxdb
 import (
 	"testing"
 
-	"github.com/grafana/grafana/pkg/components/simplejson"
-	"github.com/grafana/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
+	"github.com/yinzhiqiang/grafana/pkg/models"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

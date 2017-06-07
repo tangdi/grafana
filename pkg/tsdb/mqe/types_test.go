@@ -7,7 +7,7 @@ import (
 
 	"fmt"
 
-	"github.com/grafana/grafana/pkg/tsdb"
+	"github.com/yinzhiqiang/grafana/pkg/tsdb"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

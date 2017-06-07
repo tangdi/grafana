@@ -3,10 +3,10 @@ package api
 import (
 	"testing"
 
-	"github.com/grafana/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/models"
 
-	"github.com/grafana/grafana/pkg/bus"
-	"github.com/grafana/grafana/pkg/components/simplejson"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

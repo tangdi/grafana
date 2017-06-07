@@ -6,19 +6,19 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/grafana/grafana/pkg/api"
-	"github.com/grafana/grafana/pkg/log"
-	"github.com/grafana/grafana/pkg/login"
-	"github.com/grafana/grafana/pkg/metrics"
-	"github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/plugins"
-	"github.com/grafana/grafana/pkg/services/alerting"
-	"github.com/grafana/grafana/pkg/services/cleanup"
-	"github.com/grafana/grafana/pkg/services/eventpublisher"
-	"github.com/grafana/grafana/pkg/services/notifications"
-	"github.com/grafana/grafana/pkg/services/search"
-	"github.com/grafana/grafana/pkg/setting"
-	"github.com/grafana/grafana/pkg/social"
+	"github.com/yinzhiqiang/grafana/pkg/api"
+	"github.com/yinzhiqiang/grafana/pkg/log"
+	"github.com/yinzhiqiang/grafana/pkg/login"
+	"github.com/yinzhiqiang/grafana/pkg/metrics"
+	"github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/plugins"
+	"github.com/yinzhiqiang/grafana/pkg/services/alerting"
+	"github.com/yinzhiqiang/grafana/pkg/services/cleanup"
+	"github.com/yinzhiqiang/grafana/pkg/services/eventpublisher"
+	"github.com/yinzhiqiang/grafana/pkg/services/notifications"
+	"github.com/yinzhiqiang/grafana/pkg/services/search"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/social"
 )
 
 func NewGrafanaServer() models.GrafanaServer {

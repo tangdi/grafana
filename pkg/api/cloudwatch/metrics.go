@@ -11,9 +11,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
-	"github.com/grafana/grafana/pkg/metrics"
-	"github.com/grafana/grafana/pkg/middleware"
-	"github.com/grafana/grafana/pkg/util"
+	"github.com/yinzhiqiang/grafana/pkg/metrics"
+	"github.com/yinzhiqiang/grafana/pkg/middleware"
+	"github.com/yinzhiqiang/grafana/pkg/util"
 )
 
 var metricsMap map[string][]string

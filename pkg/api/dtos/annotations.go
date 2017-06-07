@@ -1,6 +1,6 @@
 package dtos
 
-import "github.com/grafana/grafana/pkg/components/simplejson"
+import "github.com/yinzhiqiang/grafana/pkg/components/simplejson"
 
 type Annotation struct {
 	AlertId     int64  `json:"alertId"`

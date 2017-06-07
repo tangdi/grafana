@@ -12,16 +12,16 @@ import (
 
 	macaron "gopkg.in/macaron.v1"
 
-	"github.com/grafana/grafana/pkg/api/live"
-	httpstatic "github.com/grafana/grafana/pkg/api/static"
-	"github.com/grafana/grafana/pkg/bus"
-	"github.com/grafana/grafana/pkg/cmd/grafana-cli/logger"
-	"github.com/grafana/grafana/pkg/components/simplejson"
-	"github.com/grafana/grafana/pkg/log"
-	"github.com/grafana/grafana/pkg/middleware"
-	"github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/plugins"
-	"github.com/grafana/grafana/pkg/setting"
+	"github.com/yinzhiqiang/grafana/pkg/api/live"
+	httpstatic "github.com/yinzhiqiang/grafana/pkg/api/static"
+	"github.com/yinzhiqiang/grafana/pkg/bus"
+	"github.com/yinzhiqiang/grafana/pkg/cmd/grafana-cli/logger"
+	"github.com/yinzhiqiang/grafana/pkg/components/simplejson"
+	"github.com/yinzhiqiang/grafana/pkg/log"
+	"github.com/yinzhiqiang/grafana/pkg/middleware"
+	"github.com/yinzhiqiang/grafana/pkg/models"
+	"github.com/yinzhiqiang/grafana/pkg/plugins"
+	"github.com/yinzhiqiang/grafana/pkg/setting"
 )
 
 type HttpServer struct {
