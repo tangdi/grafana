@@ -1,6 +1,7 @@
 define([
   './panellinks/module',
   './dashlinks/module',
+  './chartdrilldown/module',
   './annotations/all',
   './templating/all',
   './dashboard/all',

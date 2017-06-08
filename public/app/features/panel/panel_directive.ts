@@ -20,7 +20,11 @@ var panelTemplate = `
       </span>
 
       <div class="panel-title-container drag-handle" panel-menu></div>
-      <div class="panel-drilldown" panel-drilldown></div>
+      <div class="panel-drilldown">
+           <i class="fa" ng-repeat="link in ::ctrl.panel.links">
+            <a ng-click="ctrl.drilldown($index)" target="{{::link.targetBlank ? '_blank' : '_self'}}">{{::link.title}}</a>
+          </i>
+      </div>
     </div>
 
     <div class="panel-content">
@@ -186,9 +190,47 @@ module.directive('grafanaPanel', function($rootScope, $document) {
       elem.on('mouseenter', mouseEnter);
       elem.on('mouseleave', mouseLeave);
 
+      ctrl.isPanelVisible = function () {
+        var position = panelContainer[0].getBoundingClientRect();
+        return (0 < position.top) && (position.top < window.innerHeight);
+      };
+
+      ctrl.drilldown = function (index) {
+        var link = ctrl.panel.links[index];
+        if (!link){
+          return;
+        }
+        var linkSrv = ctrl.$injector.get('linkSrv');
+        var panel = ctrl.panel;
+        var scopedVars = panel.scopedVars;
+
+        //add panel.scopedVars for repeat var
+        if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
+          scopedVars[panel.repeat] = panel.scopedVars[panel.repeat].value;
+        }
+
+        var info = linkSrv.getPanelLinkAnchorInfo(link,scopedVars);
+
+        if (link.targetBlank) {
+          window.open(info.href, '_blank');
+        } else {
+          window.open(info.href, '_self');
+        }
+
+      };
+
+      const refreshOnScroll = function () {
+        if (ctrl.skippedLastRefresh) {
+          ctrl.refresh();
+        }
+      };
+
+      $document.on('scroll', refreshOnScroll);
+
       scope.$on('$destroy', function() {
         elem.off();
         cornerInfoElem.off();
+        $document.off('scroll', refreshOnScroll);
 
         if (infoDrop) {
           infoDrop.destroy();
@@ -296,5 +338,3 @@ module.directive('panelHelpCorner', function($rootScope) {
     }
   };
 });
-
-

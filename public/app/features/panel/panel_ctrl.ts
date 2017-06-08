@@ -114,6 +114,7 @@ export class PanelCtrl {
         }
       });
     }
+    this.addEditorTab('Chart Drilldown', 'public/app/partials/drilldown.html');
   }
 
   changeTab(newIndex) {

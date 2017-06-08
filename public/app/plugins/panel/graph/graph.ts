@@ -149,15 +149,15 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         // add left axis labels
         if (panel.yaxes[0].label) {
           var yaxisLabel = $("<div class='axisLabel left-yaxis-label flot-temp-elem'></div>")
-          .text(panel.yaxes[0].label)
-          .appendTo(elem);
+            .text(panel.yaxes[0].label)
+            .appendTo(elem);
         }
 
         // add right axis labels
         if (panel.yaxes[1].label) {
           var rightLabel = $("<div class='axisLabel right-yaxis-label flot-temp-elem'></div>")
-          .text(panel.yaxes[1].label)
-          .appendTo(elem);
+            .text(panel.yaxes[1].label)
+            .appendTo(elem);
         }
 
         thresholdManager.draw(plot);
@@ -174,8 +174,8 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         for (var i = 0; i < yaxis.length; i++) {
           var axis = yaxis[i];
           var panelOptions = panel.yaxes[i];
-          axis.options.max = axis.options.max !== null ? axis.options.max : panelOptions.max;
-          axis.options.min = axis.options.min !== null ? axis.options.min : panelOptions.min;
+          axis.options.max = panelOptions.max;
+          axis.options.min = panelOptions.min;
         }
       }
 
@@ -507,7 +507,6 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         if (axis.logBase === 1) {
           return;
         }
-
         if (axis.min < Number.MIN_VALUE) {
           axis.min = null;
         }
@@ -557,19 +556,12 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           return;
         }
 
-        if (Number.isFinite(min) && Number.isFinite(max)) {
-          axis.ticks = [];
-          var nextTick;
-          for (nextTick = min; nextTick <= max; nextTick *= axis.logBase) {
-            axis.ticks.push(nextTick);
-          }
-          axis.tickDecimals = decimalPlaces(min);
-        } else {
-          axis.ticks = [1, 2];
-          delete axis.min;
-          delete axis.max;
+        axis.ticks = [];
+        var nextTick;
+        for (nextTick = min; nextTick <= max; nextTick *= axis.logBase) {
+          axis.ticks.push(nextTick);
         }
-
+        axis.tickDecimals = decimalPlaces(min);
       }
 
       function decimalPlaces(num) {
@@ -667,16 +659,22 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
 
           var scopedVars = {};
 
+
           scopedVars['from'] = fromStr;
           scopedVars['to'] = toStr;
 
           templateSrv.fillVariableValuesForUrl(scopedVars);
 
+          //add panel.scopedVars for repeat var
+          if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
+            scopedVars['var-'+panel.repeat] = panel.scopedVars[panel.repeat].value;
+          }
+
           //remove duplicates vars
           if (scopedVars){
             for (var varName in scopedVars){
               if (url.indexOf(varName+"=")>0){
-                 delete scopedVars[varName];
+                delete scopedVars[varName];
               }
             }
             url = linkSrv.addParamsToUrl(url, scopedVars);
