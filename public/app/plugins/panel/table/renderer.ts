@@ -8,7 +8,7 @@ export class TableRenderer {
   formatters: any[];
   colorState: any;
 
-  constructor(private panel, private table, private isUtc, private sanitize) {
+  constructor(private panel, private table, private isUtc, private sanitize, private linkSrv) {
     this.initColumns();
   }
 
@@ -127,6 +127,38 @@ export class TableRenderer {
     return this.formatters[colIndex] ? this.formatters[colIndex](value) : value;
   }
 
+  formateDrilldown(columnText,value,panel,linkSrv){
+    if (!panel.drilldowns||!linkSrv){
+       return value;
+    }
+
+    for (var y = 0; y < panel.drilldowns.length; y++){
+      var drilldown = panel.drilldowns[y];
+      var regexp = new RegExp(drilldown.alias);
+      if (regexp.test(columnText)){
+
+        var scopedVars = {};
+
+        scopedVars[columnText] = {"value": value};
+
+        //add panel.scopedVars for repeat var
+        if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
+          scopedVars[panel.repeat] = panel.scopedVars[panel.repeat].value;
+        }
+
+        var link = linkSrv.getPanelLinkAnchorInfo(drilldown,scopedVars);
+
+
+        return '<a class="panel-menu-link" style="color:#33B5E5;" target="'
+          +link.targetBlank+'" href="'+link.href+'">' + link.title + '</a>';
+
+      }
+    }
+
+    return value;
+
+  }
+
   renderCell(columnIndex, value, addWidthHack = false) {
     value = this.formatColumnValue(columnIndex, value);
     var style = '';
@@ -152,6 +184,8 @@ export class TableRenderer {
     } else {
       this.table.columns[columnIndex].hidden = false;
     }
+
+    value = this.formateDrilldown(this.table.columns[columnIndex].text,value,this.panel,this.linkSrv);
 
     return '<td' + style + '>' + value + widthHack + '</td>';
   }

@@ -123,7 +123,8 @@ class TablePanelCtrl extends MetricsPanelCtrl {
     this.table = transformDataToTable(this.dataRaw, this.panel);
     this.table.sort(this.panel.sort);
 
-    this.renderer = new TableRenderer(this.panel, this.table, this.dashboard.isTimezoneUtc(), this.$sanitize);
+    this.renderer = new TableRenderer(this.panel, this.table, this.dashboard.isTimezoneUtc(),
+      this.$sanitize, this.$injector.get('linkSrv'));
 
     return super.render(this.table);
   }

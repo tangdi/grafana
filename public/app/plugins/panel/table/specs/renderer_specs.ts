@@ -63,7 +63,7 @@ describe('when rendering table', () => {
       return 'sanitized';
     };
 
-    var renderer = new TableRenderer(panel, table, 'utc', sanitize);
+    var renderer = new TableRenderer(panel, table, 'utc', sanitize, null);
 
     it('time column should be formated', () => {
       var html = renderer.renderCell(0, 1388556366666);

@@ -6,6 +6,11 @@
   <div class="gf-form-group" ng-repeat="link in panel.drilldowns">
     <div class="section">
       <div class="gf-form max-width-25">
+        <span class="gf-form-label width-7">Alias or Regex</span>
+        <input type="text" ng-model="link.alias" class="gf-form-input" placeholder="Alias or Regex" ng-model-onblur ng-blur="editor.render()">
+      </div>
+
+      <div class="gf-form max-width-25">
         <span class="gf-form-label width-7">Type</span>
         <div class="gf-form-select-wrapper gf-form--grow">
           <select class="gf-form-input" ng-model="link.type" ng-options="f for f in ['dashboard','absolute']"></select>
@@ -47,5 +52,5 @@
 </div>
 
 <div class="editor-row">
-  <button class="btn btn-inverse" ng-click="addLink()"><i class="fa fa-plus"></i> Add link</button>
+  <button class="btn btn-inverse" ng-click="addLink()"><i class="fa fa-plus"></i> Add Drilldown config</button>
 </div>

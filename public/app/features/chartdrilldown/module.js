@@ -24,6 +24,7 @@ function (angular, _) {
 
       $scope.addLink = function() {
         $scope.panel.drilldowns.push({
+          alias: '/.*/',
           type: 'dashboard',
         });
       };
