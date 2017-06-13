@@ -26,7 +26,8 @@ function (angular, _) {
         $scope.panel.drilldowns.push({
           alias: '.*',
           type: 'dashboard',
-          separator: ''
+          separator: '',
+          targetBlank: true
         });
       };
 

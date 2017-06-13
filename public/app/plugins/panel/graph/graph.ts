@@ -648,7 +648,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
             var fromTimestamp =  moment(new Date(item.datapoint[0]));
             var toTimestamp = moment(new Date(item.datapoint[0] + item.series.stats.timeStep));
             //TODO
-            var format = false;
+            var format = drilldown.format;
 
             var fromStr;
             var toStr;
@@ -661,13 +661,13 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
               toStr = toTimestamp.toISOString();
             }
 
-            scopedVars['from'] = fromStr;
-            scopedVars['to'] = toStr;
+            scopedVars['from'] =  {"value": fromStr};
+            scopedVars['to'] =  {"value": toStr};
 
 
             //add panel.scopedVars for repeat var
             if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
-              scopedVars[panel.repeat] = panel.scopedVars[panel.repeat].value;
+              scopedVars[panel.repeat] =  {"value": panel.scopedVars[panel.repeat].value};
             }
 
             var link = linkSrv.getPanelLinkAnchorInfo(drilldown,scopedVars);
