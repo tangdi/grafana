@@ -628,66 +628,117 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         }
 
         var panel = ctrl.panel;
-        var targets = panel.targets;
+        for (var y = 0; y < panel.drilldowns.length; y++) {
+          var drilldown = panel.drilldowns[y];
+          var alias = item.series.alias;
+          var regexp = new RegExp(drilldown.alias);
 
-        var sIndex = item.seriesIndex >= targets.length? 0 : item.seriesIndex;
+          if (regexp.test(alias)) {
+            var scopedVars = {};
 
-        if (item && panel && targets && targets[sIndex] && panel.targets[sIndex].drilldown) {
-          var separators = " ";
-          var alias = item.series.alias.split(separators);
-          var fromTimestamp =  moment(new Date(item.datapoint[0]));
-          var toTimestamp = moment(new Date(item.datapoint[0] + item.series.stats.timeStep));
-          var format = panel.targets[sIndex].drilldown.format;
+            scopedVars["alias"] = {"value": alias};
 
-          var fromStr;
-          var toStr;
-
-          if (format){
-            fromStr = fromTimestamp.format(format);
-            toStr = toTimestamp.utc().format(format);
-          } else {
-            fromStr = fromTimestamp.toISOString();
-            toStr = toTimestamp.toISOString();
-          }
-
-          var url = panel.targets[sIndex].drilldown.url;
-          if (alias && alias.length > 0){
-            for (var index in alias){
-              url = url.replace(new RegExp("@alias"+index, 'g'),encodeURIComponent(alias[index]));
-            }
-          }
-
-          var scopedVars = {};
-
-
-          scopedVars['from'] = fromStr;
-          scopedVars['to'] = toStr;
-
-          templateSrv.fillVariableValuesForUrl(scopedVars);
-
-          //add panel.scopedVars for repeat var
-          if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
-            scopedVars['var-'+panel.repeat] = panel.scopedVars[panel.repeat].value;
-          }
-
-          //remove duplicates vars
-          if (scopedVars){
-            for (var varName in scopedVars){
-              if (url.indexOf(varName+"=")>0){
-                delete scopedVars[varName];
+            if (drilldown.separator && drilldown.separator.trim().length>0){
+              var values = alias.split(drilldown.separator);
+              for (var i = 0; i < values.length; i++ ){
+                scopedVars["alias"+i] = {"value": values[i]};
               }
             }
-            url = linkSrv.addParamsToUrl(url, scopedVars);
-          }
 
-          var targetBlank = panel.targets[sIndex].drilldown.targetBlank;
+            var fromTimestamp =  moment(new Date(item.datapoint[0]));
+            var toTimestamp = moment(new Date(item.datapoint[0] + item.series.stats.timeStep));
+            //TODO
+            var format = false;
 
-          if (targetBlank) {
-            window.open(url, '_blank');
-          } else {
-            window.open(url, '_self');
+            var fromStr;
+            var toStr;
+
+            if (format){
+              fromStr = fromTimestamp.format(format);
+              toStr = toTimestamp.utc().format(format);
+            } else {
+              fromStr = fromTimestamp.toISOString();
+              toStr = toTimestamp.toISOString();
+            }
+
+            scopedVars['from'] = fromStr;
+            scopedVars['to'] = toStr;
+
+
+            //add panel.scopedVars for repeat var
+            if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
+              scopedVars[panel.repeat] = panel.scopedVars[panel.repeat].value;
+            }
+
+            var link = linkSrv.getPanelLinkAnchorInfo(drilldown,scopedVars);
+
+             if (drilldown.targetBlank) {
+                window.open(link.href, '_blank');
+               } else {
+                window.open(link.href, '_self');
+             }
           }
         }
+
+
+        // var sIndex = item.seriesIndex >= targets.length? 0 : item.seriesIndex;
+        //
+        // if (item && panel && targets && targets[sIndex] && panel.targets[sIndex].drilldown) {
+        //   var separators = " ";
+        //   var alias = item.series.alias.split(separators);
+        //   var fromTimestamp =  moment(new Date(item.datapoint[0]));
+        //   var toTimestamp = moment(new Date(item.datapoint[0] + item.series.stats.timeStep));
+        //   var format = panel.targets[sIndex].drilldown.format;
+        //
+        //   var fromStr;
+        //   var toStr;
+        //
+        //   if (format){
+        //     fromStr = fromTimestamp.format(format);
+        //     toStr = toTimestamp.utc().format(format);
+        //   } else {
+        //     fromStr = fromTimestamp.toISOString();
+        //     toStr = toTimestamp.toISOString();
+        //   }
+        //
+        //   var url = panel.targets[sIndex].drilldown.url;
+        //   if (alias && alias.length > 0){
+        //     for (var index in alias){
+        //       url = url.replace(new RegExp("@alias"+index, 'g'),encodeURIComponent(alias[index]));
+        //     }
+        //   }
+        //
+        //   var scopedVars = {};
+        //
+        //
+        //   scopedVars['from'] = fromStr;
+        //   scopedVars['to'] = toStr;
+        //
+        //   templateSrv.fillVariableValuesForUrl(scopedVars);
+        //
+        //   //add panel.scopedVars for repeat var
+        //   if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
+        //     scopedVars['var-'+panel.repeat] = panel.scopedVars[panel.repeat].value;
+        //   }
+        //
+        //   //remove duplicates vars
+        //   if (scopedVars){
+        //     for (var varName in scopedVars){
+        //       if (url.indexOf(varName+"=")>0){
+        //         delete scopedVars[varName];
+        //       }
+        //     }
+        //     url = linkSrv.addParamsToUrl(url, scopedVars);
+        //   }
+        //
+        //   var targetBlank = panel.targets[sIndex].drilldown.targetBlank;
+        //
+        //   if (targetBlank) {
+        //     window.open(url, '_blank');
+        //   } else {
+        //     window.open(url, '_self');
+        //   }
+        // }
       });
 
       scope.$on('$destroy', function() {

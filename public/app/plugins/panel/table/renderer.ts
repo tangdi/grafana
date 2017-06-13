@@ -127,7 +127,7 @@ export class TableRenderer {
     return this.formatters[colIndex] ? this.formatters[colIndex](value) : value;
   }
 
-  formateDrilldown(columnText,value,panel,linkSrv){
+  formatDrilldown(columnText,value,panel,linkSrv){
     if (!panel.drilldowns||!linkSrv){
        return value;
     }
@@ -141,6 +141,13 @@ export class TableRenderer {
 
         scopedVars[columnText] = {"value": value};
 
+        if (drilldown.separator && drilldown.separator.trim().length>0){
+          var values = value.split(drilldown.separator);
+          for (var i = 0; i < values.length; i++ ){
+            scopedVars["alias"+i] = {"value": values[i]};
+          }
+        }
+
         //add panel.scopedVars for repeat var
         if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
           scopedVars[panel.repeat] = panel.scopedVars[panel.repeat].value;
@@ -148,9 +155,8 @@ export class TableRenderer {
 
         var link = linkSrv.getPanelLinkAnchorInfo(drilldown,scopedVars);
 
-
         return '<a class="panel-menu-link" style="color:#33B5E5;" target="'
-          +link.targetBlank+'" href="'+link.href+'">' + link.title + '</a>';
+          +link.target+'" href="'+link.href+'">' + link.title + '</a>';
 
       }
     }
@@ -185,7 +191,7 @@ export class TableRenderer {
       this.table.columns[columnIndex].hidden = false;
     }
 
-    value = this.formateDrilldown(this.table.columns[columnIndex].text,value,this.panel,this.linkSrv);
+    value = this.formatDrilldown(this.table.columns[columnIndex].text,value,this.panel,this.linkSrv);
 
     return '<td' + style + '>' + value + widthHack + '</td>';
   }
