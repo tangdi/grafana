@@ -2,6 +2,8 @@
 module.exports = function(grunt) {
   'use strict';
 
+  grunt.option("force");
+
   grunt.registerTask('css', [
     'sass',
     'concat:cssDark',
@@ -25,7 +27,9 @@ module.exports = function(grunt) {
     'exec:tscompile'
   ]);
 
-  grunt.registerTask('test', ['default', 'karma:test', 'no-only-tests']);
+  grunt.registerTask('test', ['default',
+    'karma:test',
+    'no-only-tests']);
 
   grunt.registerTask('no-only-tests', function() {
     var files = grunt.file.expand('public/**/*_specs\.ts', 'public/**/*_specs\.js');
