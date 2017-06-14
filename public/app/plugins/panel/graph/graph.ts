@@ -634,7 +634,8 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var regexp = new RegExp(drilldown.alias);
 
           if (regexp.test(alias)) {
-            var scopedVars = {};
+            //add panel.scopedVars for repeat var
+            var scopedVars = panel.scopedVars? panel.scopedVars: {};
 
             scopedVars["alias"] = {"value": alias};
 
@@ -664,10 +665,14 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
             scopedVars['from'] =  {"value": fromStr};
             scopedVars['to'] =  {"value": toStr};
 
+            //add panel vars for params
+            if (!drilldown.includeVars){
+              _.each(templateSrv.variables, function(variable) {
+                if (scopedVars[variable.name] === void 0) {
 
-            //add panel.scopedVars for repeat var
-            if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
-              scopedVars[panel.repeat] =  {"value": panel.scopedVars[panel.repeat].value};
+                  scopedVars[variable.name] = {"value": variable.getValueForUrl()};
+                }
+              });
             }
 
             var link = linkSrv.getPanelLinkAnchorInfo(drilldown,scopedVars);
@@ -679,66 +684,6 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
              }
           }
         }
-
-
-        // var sIndex = item.seriesIndex >= targets.length? 0 : item.seriesIndex;
-        //
-        // if (item && panel && targets && targets[sIndex] && panel.targets[sIndex].drilldown) {
-        //   var separators = " ";
-        //   var alias = item.series.alias.split(separators);
-        //   var fromTimestamp =  moment(new Date(item.datapoint[0]));
-        //   var toTimestamp = moment(new Date(item.datapoint[0] + item.series.stats.timeStep));
-        //   var format = panel.targets[sIndex].drilldown.format;
-        //
-        //   var fromStr;
-        //   var toStr;
-        //
-        //   if (format){
-        //     fromStr = fromTimestamp.format(format);
-        //     toStr = toTimestamp.utc().format(format);
-        //   } else {
-        //     fromStr = fromTimestamp.toISOString();
-        //     toStr = toTimestamp.toISOString();
-        //   }
-        //
-        //   var url = panel.targets[sIndex].drilldown.url;
-        //   if (alias && alias.length > 0){
-        //     for (var index in alias){
-        //       url = url.replace(new RegExp("@alias"+index, 'g'),encodeURIComponent(alias[index]));
-        //     }
-        //   }
-        //
-        //   var scopedVars = {};
-        //
-        //
-        //   scopedVars['from'] = fromStr;
-        //   scopedVars['to'] = toStr;
-        //
-        //   templateSrv.fillVariableValuesForUrl(scopedVars);
-        //
-        //   //add panel.scopedVars for repeat var
-        //   if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
-        //     scopedVars['var-'+panel.repeat] = panel.scopedVars[panel.repeat].value;
-        //   }
-        //
-        //   //remove duplicates vars
-        //   if (scopedVars){
-        //     for (var varName in scopedVars){
-        //       if (url.indexOf(varName+"=")>0){
-        //         delete scopedVars[varName];
-        //       }
-        //     }
-        //     url = linkSrv.addParamsToUrl(url, scopedVars);
-        //   }
-        //
-        //   var targetBlank = panel.targets[sIndex].drilldown.targetBlank;
-        //
-        //   if (targetBlank) {
-        //     window.open(url, '_blank');
-        //   } else {
-        //     window.open(url, '_self');
-        //   }
-        // }
       });
 
       scope.$on('$destroy', function() {
