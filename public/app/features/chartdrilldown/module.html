@@ -5,19 +5,19 @@
 
   <div class="gf-form-group" ng-repeat="link in panel.drilldowns">
     <div class="section">
-      <div class="gf-form max-width-30">
+      <div class="gf-form max-width-40">
         <span class="gf-form-label width-10">Alias or Regex</span>
-        <input type="text" ng-model="link.alias" class="gf-form-input" placeholder="Alias or Regex" ng-model-onblur ng-blur="editor.render()">
+        <input type="text" ng-model="link.alias" class="gf-form-input width-30" placeholder="Alias or Regex" ng-model-onblur ng-blur="editor.render()">
       </div>
 
-      <div class="gf-form max-width-30">
+      <div class="gf-form max-width-40">
         <span class="gf-form-label width-7">Type</span>
         <div class="gf-form-select-wrapper gf-form--grow">
           <select class="gf-form-input" ng-model="link.type" ng-options="f for f in ['dashboard','absolute']" ></select>
         </div>
       </div>
 
-      <div class="gf-form max-width-30">
+      <div class="gf-form max-width-40">
         <span class="gf-form-label width-7" ng-show="link.type === 'dashboard'">Dashboard</span>
         <input ng-show="link.type === 'dashboard'" type="text" ng-model="link.dashboard" bs-typeahead="searchDashboards" class="gf-form-input" ng-model-onblur ng-blur="editor.render()">
 
@@ -25,12 +25,12 @@
         <input ng-show="link.type === 'absolute'" type="text" ng-model="link.url" class="gf-form-input" ng-model-onblur ng-blur="editor.render()">
       </div>
 
-      <div class="gf-form max-width-30">
+      <div class="gf-form max-width-40">
         <div class="gf-form-label width-7">Title</div>
         <input type="text" ng-model="link.title" class="gf-form-input" ng-model-onblur ng-blur="editor.render()">
       </div>
 
-      <div class="gf-form max-width-30">
+      <div class="gf-form max-width-40">
         <div class="gf-form-label width-7">Date format</div>
         <input type="text" ng-model="link.format" class="gf-form-input" ng-model-onblur ng-blur="editor.render()" placeholder="default is  ISO 8601 standard">
       </div>
@@ -38,18 +38,22 @@
     </div>
 
     <div class="section">
-      <div class="gf-form">
+      <div class="gf-form max-width-40">
         <span class="gf-form-label width-12">Alias separator</span>
-        <input type="text" ng-model="link.separator" class="gf-form-input width-100" ng-model-onblur ng-blur="editor.render()">
+        <input type="text" ng-model="link.separator" class="gf-form-input  width-28" ng-model-onblur ng-blur="editor.render()">
       </div>
 
-      <div class="gf-form">
+      <div class="gf-form max-width-40">
         <span class="gf-form-label width-12">Url params</span>
         <input type="text" ng-model="link.params" class="gf-form-input width-100" ng-model-onblur ng-blur="editor.render()">
       </div>
 
+      <div class="gf-form max-width-40">
+        <span class="gf-form-label width-12">Include panel variables</span>
+        <input type="text" ng-model="link.includeVars" class="gf-form-input width-100" ng-model-onblur ng-blur="editor.render()">
+      </div>
+
       <gf-form-switch class="gf-form" label-class="width-12" label="Include panel time range" checked="link.keepTime" on-change="editor.render()"></gf-form-switch>
-      <gf-form-switch class="gf-form" label-class="width-12" label="Include panel variables" checked="link.includeVars" on-change="editor.render()"></gf-form-switch>
       <gf-form-switch class="gf-form" label-class="width-12" label="Open in new tab " checked="link.targetBlank" on-change="editor.render()"></gf-form-switch>
     </div>
 

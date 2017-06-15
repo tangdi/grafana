@@ -4,13 +4,13 @@
 .width-auto { width: auto; }
 
 // widths
-@for $i from 1 through 30 {
+@for $i from 1 through 40 {
   .width-#{$i} {
     width: ($spacer * $i) - $gf-form-margin !important;
   }
 }
 
-@for $i from 1 through 30 {
+@for $i from 1 through 40 {
   .max-width-#{$i} {
     max-width: ($spacer * $i) - $gf-form-margin !important;
     flex-grow: 1;

@@ -176,6 +176,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var panelOptions = panel.yaxes[i];
           axis.options.max = panelOptions.max;
           axis.options.min = panelOptions.min;
+          //axis.options.ticks = [[0, "zero"], [10, "one mark"], [100, "two marks"]];
         }
       }
 
@@ -616,6 +617,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         }
       });
 
+      var self = this;
       elem.bind("plotclick", function (event, pos, item) {
         if (pos.ctrlKey || pos.metaKey || eventManager.event)  {
           // Skip if range selected (added in "plotselected" event handler)
@@ -665,22 +667,50 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
             scopedVars['from'] =  {"value": fromStr};
             scopedVars['to'] =  {"value": toStr};
 
-            //add panel vars for params
-            if (!drilldown.includeVars){
-              _.each(templateSrv.variables, function(variable) {
-                if (scopedVars[variable.name] === void 0) {
+            //var link = self.getPanelLinkAnchorInfo(drilldown,scopedVars);
+            var info = {};
+            if (drilldown.type === 'absolute') {
+              info["target"] = drilldown.targetBlank ? '_blank' : '_self';
+              info["href"] = templateSrv.replace(drilldown.url || '', scopedVars);
+              info["title"] = templateSrv.replace(drilldown.title || '', scopedVars);
+            } else if (drilldown.dashUri) {
+              info["href"] = 'dashboard/' + drilldown.dashUri + '?';
+              info["title"] = templateSrv.replace(drilldown.title || '', scopedVars);
+              info["target"] = drilldown.targetBlank ? '_blank' : '';
+            } else {
+              info["title"] = templateSrv.replace(drilldown.title || '', scopedVars);
+              var slug = kbn.slugifyForUrl(drilldown.dashboard || '');
+              info["href"] = 'dashboard/db/' + slug + '?';
+            }
 
-                  scopedVars[variable.name] = {"value": variable.getValueForUrl()};
+            var params = {};
+
+            if (drilldown.keepTime) {
+              var range = timeSrv.timeRangeForUrl();
+              params['from'] = range.from;
+              params['to'] = range.to;
+            }
+
+            if (drilldown.includeVars !== void 0) {
+                var panelVars = drilldown.includeVars.split(",");
+                _.each(templateSrv.variables, function(variable) {
+                if (panelVars.indexOf(variable.name)>=0) {
+                    params['var-' + variable.name] = variable.getValueForUrl();
                 }
               });
             }
 
-            var link = linkSrv.getPanelLinkAnchorInfo(drilldown,scopedVars);
+            info["href"] = linkSrv.addParamsToUrl(info["href"], params);
 
-             if (drilldown.targetBlank) {
-                window.open(link.href, '_blank');
+            if (drilldown.params) {
+              info["href"] = linkSrv.appendToQueryString(info["href"], templateSrv.replace(drilldown.params, scopedVars));
+            }
+
+
+            if (drilldown.targetBlank) {
+                window.open(info["href"], '_blank');
                } else {
-                window.open(link.href, '_self');
+                window.open(info["href"], '_self');
              }
           }
         }
