@@ -176,7 +176,8 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var panelOptions = panel.yaxes[i];
           axis.options.max = panelOptions.max;
           axis.options.min = panelOptions.min;
-          //axis.options.ticks = [[0, "zero"], [10, "one mark"], [100, "two marks"]];
+          //[[0, "zero"], [10, "one mark"], [100, "two marks"]];
+          axis.options.ticks = panelOptions.ticks;
         }
       }
 
