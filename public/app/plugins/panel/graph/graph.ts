@@ -149,15 +149,24 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         // add left axis labels
         if (panel.yaxes[0].label) {
           var yaxisLabel = $("<div class='axisLabel left-yaxis-label flot-temp-elem'></div>")
-            .text(panel.yaxes[0].label)
-            .appendTo(elem);
+            .text(panel.yaxes[0].label);
+          if (panel.yaxes[0].color){
+            yaxisLabel.css("color", panel.yaxes[0].color);
+          }
+
+          yaxisLabel.appendTo(elem);
         }
 
         // add right axis labels
         if (panel.yaxes[1].label) {
           var rightLabel = $("<div class='axisLabel right-yaxis-label flot-temp-elem'></div>")
-            .text(panel.yaxes[1].label)
-            .appendTo(elem);
+            .text(panel.yaxes[1].label);
+
+          if (panel.yaxes[1].color){
+            rightLabel.css("color", panel.yaxes[1].color);
+          }
+
+          rightLabel.appendTo(elem);
         }
 
         thresholdManager.draw(plot);
@@ -176,8 +185,35 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var panelOptions = panel.yaxes[i];
           axis.options.max = panelOptions.max;
           axis.options.min = panelOptions.min;
-          //[[0, "zero"], [10, "one mark"], [100, "two marks"]];
-          axis.options.ticks = panelOptions.ticks;
+          if (panelOptions.ticks && panelOptions.ticks.trim().length > 0) {
+            var ticksMap = new Array();
+
+            var ticks = panelOptions.ticks.trim().split(",");
+            for (var j = 0; j < ticks.length; j++) {
+              if (ticks[j] && ticks[j].length > 0) {
+                var map = ticks[j].split("=");
+                if (map.length === 1) {
+                  //ticks: [0, 1.2, 2.4]
+                  ticksMap.push(map);
+                } else if (map.length === 2) {
+                  //ticks: [[0, "zero"], [1.2, "one mark"], [2.4, "two marks"]]
+                  ticksMap.push(new Array(map[0], map[1]));
+                }
+
+              }
+              if (ticksMap && ticksMap.length > 0) {
+                axis.options.ticks = ticksMap;
+              }
+            }
+
+          }
+
+          if (panelOptions.color && panelOptions.color.trim().length > 0){
+            var color = panelOptions.color.trim();
+            axis.options.color = color;
+            axis.options.tickColor = color;
+            axis.options.font = {color: color};
+          }
         }
       }
 
