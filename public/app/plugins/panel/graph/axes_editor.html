@@ -36,12 +36,25 @@
 			</div>
 
       <div class="gf-form">
-        <label class="gf-form-label width-5">Ticks</label>
+        <label class="gf-form-label width-6">Ticks
+          <info-popover mode="right-normal">
+            Map value to name, the format is: value1=name1,value2=name2<br/>
+            For example: 0=SERVE_OK,10=FLAG,20=CHALLENGE,30=BLOCK
+          </info-popover>
+        </label>
         <input type="text" class="gf-form-input max-width-20" ng-model="yaxis.ticks" ng-change="ctrl.render()" ng-model-onblur>
       </div>
 
       <div class="gf-form">
-        <label class="gf-form-label width-5">Color</label>
+        <label class="gf-form-label width-6">Color
+          <info-popover mode="right-normal">
+            support css3 color value:<br/>
+            a valid color name - like "red";<br/>
+            an RGB value - like "rgb(255, 0, 0)";<br/>
+            an RGBA value - line "rgba(255, 0, 0, 0.2)";<br/>
+            a HEX value - like "#ff0000";
+          </info-popover>
+        </label>
         <input type="text" class="gf-form-input max-width-20" ng-model="yaxis.color" ng-change="ctrl.render()" ng-model-onblur>
       </div>
 

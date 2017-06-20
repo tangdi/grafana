@@ -290,17 +290,20 @@ function (queryDef) {
       size = queryDef.size;
     }
 
+    var ordeyBy = queryDef.order?queryDef.order:"_term";
+    var direction =queryDef.desc?"desc":"asc";
+
     query.aggs =  {
       "1": {
         "terms": {
           "field": queryDef.field,
           "size": size,
           "order": {
-            "_term": "asc"
           }
         },
       }
     };
+    query.aggs["1"].terms.order[ordeyBy] = direction;
     return query;
   };
 
