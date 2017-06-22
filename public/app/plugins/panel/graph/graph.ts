@@ -150,10 +150,6 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         if (panel.yaxes[0].label) {
           var yaxisLabel = $("<div class='axisLabel left-yaxis-label flot-temp-elem'></div>")
             .text(panel.yaxes[0].label);
-          if (panel.yaxes[0].tickColor){
-            yaxisLabel.css("color", panel.yaxes[0].tickColor);
-          }
-
           yaxisLabel.appendTo(elem);
         }
 
@@ -161,11 +157,6 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         if (panel.yaxes[1].label) {
           var rightLabel = $("<div class='axisLabel right-yaxis-label flot-temp-elem'></div>")
             .text(panel.yaxes[1].label);
-
-          if (panel.yaxes[1].tickColor){
-            rightLabel.css("color", panel.yaxes[1].tickColor);
-          }
-
           rightLabel.appendTo(elem);
         }
 
@@ -212,7 +203,6 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           if (panelOptions.color && panelOptions.color.trim().length > 0){
             var color = panelOptions.color.trim();
             axis.options.color = color;
-            axis.options.tickColor = color;
             axis.options.font = {color: color};
           }
         }
