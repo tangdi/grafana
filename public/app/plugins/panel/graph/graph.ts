@@ -131,6 +131,22 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var series = data[i];
           var axis = yaxis[series.yaxis - 1];
           var formater = kbn.valueFormats[panel.yaxes[series.yaxis - 1].format];
+          var panelOptions = panel.yaxes[series.yaxis - 1];
+          var ticksMap = parseTicks(panelOptions.ticks);
+          if (ticksMap && ticksMap.length > 0 && ticksMap[0].length === 2 ) {
+            formater = function(value, decimals){
+              if (value === null) {
+                return "";
+              }
+              var length = ticksMap.length;
+              for (var j = 0; j < length; j++) {
+                if (ticksMap[j][0] === value.toString()){
+                  return ticksMap[j][1];
+                }
+              }
+              return value;
+            };
+          }
 
           // decimal override
           if (_.isNumber(panel.decimals)) {
@@ -163,6 +179,30 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         thresholdManager.draw(plot);
       }
 
+      function parseTicks(ticksString){
+        if (!ticksString||ticksString.trim().length<1){
+          return null;
+        }
+
+        var ticksMap = new Array();
+
+        var ticks = ticksString.trim().split(",");
+        for (var j = 0; j < ticks.length; j++) {
+          if (ticks[j] && ticks[j].length > 0) {
+            var map = ticks[j].split("=");
+            if (map.length === 1) {
+              //ticks: [0, 1.2, 2.4]
+              ticksMap.push(map);
+            } else if (map.length === 2) {
+              //ticks: [[0, "zero"], [1.2, "one mark"], [2.4, "two marks"]]
+              ticksMap.push(new Array(map[0], map[1]));
+            }
+
+          }
+        }
+        return ticksMap;
+      }
+
       function processOffsetHook(plot, gridMargin) {
         var left = panel.yaxes[0];
         var right = panel.yaxes[1];
@@ -176,28 +216,10 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var panelOptions = panel.yaxes[i];
           axis.options.max = panelOptions.max;
           axis.options.min = panelOptions.min;
-          if (panelOptions.ticks && panelOptions.ticks.trim().length > 0) {
-            var ticksMap = new Array();
 
-            var ticks = panelOptions.ticks.trim().split(",");
-            for (var j = 0; j < ticks.length; j++) {
-              if (ticks[j] && ticks[j].length > 0) {
-                var map = ticks[j].split("=");
-                if (map.length === 1) {
-                  //ticks: [0, 1.2, 2.4]
-                  ticksMap.push(map);
-                } else if (map.length === 2) {
-                  //ticks: [[0, "zero"], [1.2, "one mark"], [2.4, "two marks"]]
-                  ticksMap.push(new Array(map[0], map[1]));
-                }
-
-              }
-              if (ticksMap && ticksMap.length > 0) {
-                axis.options.ticks = ticksMap;
-                axis.options.ticks = ticksMap;
-              }
-            }
-
+          var ticksMap = parseTicks(panelOptions.ticks);
+          if (ticksMap && ticksMap.length > 0) {
+            axis.options.ticks = ticksMap;
           }
 
           if (panelOptions.color && panelOptions.color.trim().length > 0){
