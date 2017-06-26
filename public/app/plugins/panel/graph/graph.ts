@@ -133,16 +133,19 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var axis = yaxis[series.yaxis - 1];
           var formater = kbn.valueFormats[panel.yaxes[series.yaxis - 1].format];
           var panelOptions = panel.yaxes[series.yaxis - 1];
-          ticksMap = parseTicks(panelOptions.ticks);
-          if (ticksMap && ticksMap.length > 0 && ticksMap[0].length === 2 ) {
+          if (!series.ticksMap){
+            series.ticksMap = parseTicks(panelOptions.ticks);
+          }
+
+          if (series.ticksMap && series.ticksMap.length > 0 && series.ticksMap[0].length === 2 ) {
             formater = function(value, decimals){
               if (value === null) {
                 return "";
               }
-              var length = ticksMap.length;
+              var length = this.ticksMap.length;
               for (var j = 0; j < length; j++) {
-                if (ticksMap[j][0] === value.toString()){
-                  return ticksMap[j][1];
+                if (this.ticksMap[j][0] === value.toString()){
+                  return this.ticksMap[j][1];
                 }
               }
               return value;
