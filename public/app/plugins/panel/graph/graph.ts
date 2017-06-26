@@ -43,6 +43,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
       });
       var linkSrv = ctrl.$injector.get('linkSrv');
       var templateSrv = ctrl.$injector.get('templateSrv');
+      var ticksMap;
 
       // panel events
       ctrl.events.on('panel-teardown', () => {
@@ -132,7 +133,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var axis = yaxis[series.yaxis - 1];
           var formater = kbn.valueFormats[panel.yaxes[series.yaxis - 1].format];
           var panelOptions = panel.yaxes[series.yaxis - 1];
-          var ticksMap = parseTicks(panelOptions.ticks);
+          //var ticksMap = parseTicks(panelOptions.ticks);
           if (ticksMap && ticksMap.length > 0 && ticksMap[0].length === 2 ) {
             formater = function(value, decimals){
               if (value === null) {
@@ -217,7 +218,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           axis.options.max = panelOptions.max;
           axis.options.min = panelOptions.min;
 
-          var ticksMap = parseTicks(panelOptions.ticks);
+          ticksMap = parseTicks(panelOptions.ticks);
           if (ticksMap && ticksMap.length > 0) {
             axis.options.ticks = ticksMap;
           }
