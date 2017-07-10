@@ -46,6 +46,7 @@ export default class TimeSeries {
   transform: any;
   flotpairs: any;
   unit: any;
+  extensionLine: boolean;
 
   constructor(opts) {
     this.datapoints = opts.datapoints;
@@ -102,6 +103,15 @@ export default class TimeSeries {
       if (override.yaxis !== void 0) {
         this.yaxis = override.yaxis;
       }
+
+      if (override.extensionLine !== void 0) {
+        this.extensionLine = override.extensionLine;
+      }
+
+      if (override.label !== void 0) {
+        this.label = override.label;
+      }
+
     }
   }
 

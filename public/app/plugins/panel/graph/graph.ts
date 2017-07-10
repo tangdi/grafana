@@ -130,6 +130,24 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         var yaxis = plot.getYAxes();
         for (var i = 0; i < data.length; i++) {
           var series = data[i];
+          //update extension line
+          if (series.extensionLine !== void 0 && series.extensionLine){
+            var xaxis = plot.getXAxes();
+
+            if (series.data[series.data.length-1] !== void 0 && xaxis.length>0){
+              var minTimestamp = series.data[0][0];
+              if (minTimestamp > xaxis[0].min){
+                //todo
+                series.data.unshift(new Array(xaxis[0].min,100));
+              }
+
+              var maxTimestamp = series.data[series.data.length-1][0];
+              if (maxTimestamp <  xaxis[0].max){
+                series.data.push(new Array(xaxis[0].max,series.data[series.data.length-1][1]));
+              }
+            }
+          }
+
           var axis = yaxis[series.yaxis - 1];
           var formater = kbn.valueFormats[panel.yaxes[series.yaxis - 1].format];
           var panelOptions = panel.yaxes[series.yaxis - 1];
@@ -684,7 +702,8 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         }
 
         var panel = ctrl.panel;
-        for (var y = 0; y < panel.drilldowns.length; y++) {
+        if (panel.drilldowns !== void 0){
+          for (var y = 0; y < panel.drilldowns.length; y++) {
           var drilldown = panel.drilldowns[y];
           var alias = item.series.alias;
           var regexp = new RegExp(drilldown.alias);
@@ -767,6 +786,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
                 window.open(info["href"], '_self');
              }
           }
+        }
         }
       });
 

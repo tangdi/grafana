@@ -33,6 +33,12 @@ define([
         return;
       }
 
+      // handle label overrides
+      if (item.propertyName === 'label') {
+        $scope.openLabelEditor();
+        return;
+      }
+
       $scope.override[item.propertyName] = subItem.value;
 
       // automatically disable lines for this series and the fill bellow to series
@@ -52,6 +58,12 @@ define([
       $scope.ctrl.render();
     };
 
+    $scope.LabelChanged = function(label) {
+      $scope.override['label'] = label;
+      $scope.updateCurrentOverrides();
+      $scope.ctrl.render();
+    };
+
     $scope.openColorSelector = function() {
       popoverSrv.show({
         element: $element.find(".dropdown")[0],
@@ -61,6 +73,22 @@ define([
         model: {
           autoClose: true,
           colorSelected: $scope.colorSelected,
+        },
+        onClose: function() {
+          $scope.ctrl.render();
+        }
+      });
+    };
+
+    $scope.openLabelEditor = function() {
+      popoverSrv.show({
+        element: $element.find(".dropdown")[0],
+        position: 'top center',
+        openOn: 'click',
+        template: '<gf-text-editor></gf-text-editor>',
+        model: {
+          autoClose: true,
+          textChanged: $scope.LabelChanged,
         },
         onClose: function() {
           $scope.ctrl.render();
@@ -109,6 +137,8 @@ define([
     $scope.addOverrideOption('Z-index', 'zindex', [-3,-2,-1,0,1,2,3]);
     $scope.addOverrideOption('Transform', 'transform', ['negative-Y']);
     $scope.addOverrideOption('Legend', 'legend', [true, false]);
+    $scope.addOverrideOption('Extension line', 'extensionLine', [true, false]);
+    $scope.addOverrideOption('Label', 'label', ['edit']);
     $scope.updateCurrentOverrides();
   });
 });
