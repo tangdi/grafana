@@ -20,7 +20,7 @@ var panelTemplate = `
       </span>
 
       <div class="panel-title-container drag-handle" panel-menu></div>
-      <div class="panel-drilldown">
+      <div class="panel-drilldown" ng-show="ctrl.panel.type!=='singlestat'">
            <i class="fa" ng-repeat="link in ::ctrl.panel.links">
             <a ng-click="ctrl.drilldown($index)" target="{{::link.targetBlank ? '_blank' : '_self'}}">{{::link.title}}</a>
           </i>
