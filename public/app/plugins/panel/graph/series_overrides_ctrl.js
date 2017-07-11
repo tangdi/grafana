@@ -138,7 +138,7 @@ define([
     $scope.addOverrideOption('Transform', 'transform', ['negative-Y']);
     $scope.addOverrideOption('Legend', 'legend', [true, false]);
     $scope.addOverrideOption('Extension line', 'extensionLine', [true, false]);
-    $scope.addOverrideOption('Label', 'label', ['edit']);
+    $scope.addOverrideOption('Label', 'label', ['change']);
     $scope.updateCurrentOverrides();
   });
 });

@@ -60,6 +60,24 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         if (!data) {
           return;
         }
+
+        for (var i = 0; i < data.length; i++){
+          var series = data[i];
+          //update extension line
+          if (series.extensionLine !== void 0 && series.extensionLine){
+              var minTimestamp = series.datapoints[0][1];
+              if (minTimestamp > ctrl.range.from.valueOf()){
+                //todo
+                //series.datapoints.unshift(new Array(100,ctrl.range.from.valueOf()));
+              }
+
+              var maxTimestamp = series.datapoints[series.datapoints.length-1][1];
+              if (maxTimestamp <  ctrl.range.to.valueOf()){
+                series.datapoints.push(new Array(series.datapoints[series.datapoints.length-1][0],ctrl.range.to.valueOf()));
+              }
+
+          }
+        }
         annotations = ctrl.annotations || [];
         render_panel();
       });
@@ -130,23 +148,23 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         var yaxis = plot.getYAxes();
         for (var i = 0; i < data.length; i++) {
           var series = data[i];
-          //update extension line
-          if (series.extensionLine !== void 0 && series.extensionLine){
-            var xaxis = plot.getXAxes();
-
-            if (series.data[series.data.length-1] !== void 0 && xaxis.length>0){
-              var minTimestamp = series.data[0][0];
-              if (minTimestamp > xaxis[0].min){
-                //todo
-                series.data.unshift(new Array(xaxis[0].min,100));
-              }
-
-              var maxTimestamp = series.data[series.data.length-1][0];
-              if (maxTimestamp <  xaxis[0].max){
-                series.data.push(new Array(xaxis[0].max,series.data[series.data.length-1][1]));
-              }
-            }
-          }
+          // //update extension line
+          // if (series.extensionLine !== void 0 && series.extensionLine){
+          //   var xaxis = plot.getXAxes();
+          //
+          //   if (series.data[series.data.length-1] !== void 0 && xaxis.length>0){
+          //     var minTimestamp = series.data[0][0];
+          //     if (minTimestamp > xaxis[0].min){
+          //       //todo
+          //       series.data.unshift(new Array(xaxis[0].min,100));
+          //     }
+          //
+          //     var maxTimestamp = series.data[series.data.length-1][0];
+          //     if (maxTimestamp <  xaxis[0].max){
+          //       series.data.push(new Array(xaxis[0].max,series.data[series.data.length-1][1]));
+          //     }
+          //   }
+          // }
 
           var axis = yaxis[series.yaxis - 1];
           var formater = kbn.valueFormats[panel.yaxes[series.yaxis - 1].format];
