@@ -64,7 +64,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
         for (var i = 0; i < data.length; i++){
           var series = data[i];
           //update extension line
-          if (series.extensionLine !== void 0 && series.extensionLine){
+          if (series.extensionLine !== void 0 && series.extensionLine && series.datapoints.length>0){
               var minTimestamp = series.datapoints[0][1];
               if (minTimestamp > ctrl.range.from.valueOf()){
                 //todo
