@@ -20,6 +20,16 @@ class MixedDatasource {
       return this.datasourceSrv.get(dsName).then(function(ds) {
         var opt = angular.copy(options);
         opt.targets = targets;
+        opt.series = null;
+        if (options.series !== void 0 && options.series.length>0){
+          for (var i = 0; i < options.series.length; i++){
+            if (options.series[i].alias !== void 0 && options.series[i].alias === targets[0].alias){
+              opt.series = options.series[i];
+              break;
+            }
+          }
+        }
+
         return ds.query(opt);
       });
     });
