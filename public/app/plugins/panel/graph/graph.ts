@@ -70,7 +70,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
             //todo we should query the last nearby datapoint before the minTimestampRange
 
             var lastValue = 100;
-            if(series.datapoints.length == 0){
+            if (series.datapoints.length === 0){
               //not any data
               //series.datapoints = new Array(new Array(lastValue,ctrl.range.from.valueOf()));
 
@@ -81,7 +81,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
               }
             }
 
-            if(series.datapoints.length > 0) {
+            if (series.datapoints.length > 0) {
               var maxTimestamp = series.datapoints[series.datapoints.length - 1][1];
               if (maxTimestamp < ctrl.range.to.valueOf()) {
                 series.datapoints.push(new Array(series.datapoints[series.datapoints.length - 1][0], ctrl.range.to.valueOf()));
