@@ -225,7 +225,7 @@ function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticRes
       }
 
       if (options.series !== void 0 && options.series !== null && options.series.extensionLine !== void 0 && options.series.extensionLine){
-        payload = payload.replace(/\$timeFrom/g, options.range.from.subtract(1, '"hours"').valueOf());
+        payload = payload.replace(/\$timeFrom/g, options.range.from.subtract(12, 'minute').valueOf());
       } else {
         payload = payload.replace(/\$timeFrom/g, options.range.from.valueOf());
       }
