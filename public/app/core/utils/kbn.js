@@ -377,6 +377,18 @@ function($, _) {
     return kbn.toFixed(100*size, decimals) + '%';
   };
 
+  kbn.valueFormats.commasWithDecimal= function(size, decimals) {
+    if (size === null) { return ""; }
+    var value = kbn.toFixed(size, decimals);
+    var n= value.toString().split(".");
+
+    //Comma-fies the first part
+    n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    //Combines the two sections
+    return n.join(".");
+  };
+
   /* Formats the value to hex. Uses float if specified decimals are not 0.
    * There are two options, one with 0x, and one without */
 
@@ -873,6 +885,12 @@ function($, _) {
           {text: 'Cubic meters/sec (cms)',  value: 'flowcms'  },
           {text: 'Cubic feet/sec (cfs)',    value: 'flowcfs'  },
           {text: 'Cubic feet/min (cfm)',    value: 'flowcfm'  },
+        ]
+      },
+      {
+        text: 'customer',
+        submenu: [
+          {text: 'x,xxx.x' ,              value: 'commasWithDecimal'      },
         ]
       }
     ];
