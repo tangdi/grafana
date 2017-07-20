@@ -101,7 +101,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
   }
 
   onDataReceived(dataList) {
-    const data: any = {};
+    var data = [];
     if (dataList.length > 0 && dataList[0].type === 'table'){
       this.dataType = 'table';
       const tableData = dataList.map(this.tableHandler.bind(this));
@@ -246,43 +246,50 @@ class SingleStatCtrl extends MetricsPanelCtrl {
   }
 
   setValues(data) {
-    data.flotpairs = [];
+    data.series = [];
 
-    if (this.series.length > 1) {
-      var error: any = new Error();
-      error.message = 'Multiple Series Error';
-      error.data = 'Metric query returns ' + this.series.length +
-        ' series. Single Stat Panel expects a single series.\n\nResponse:\n'+JSON.stringify(this.series);
-      throw error;
-    }
+    // if (this.series.length > 1) {
+    //   var error: any = new Error();
+    //   error.message = 'Multiple Series Error';
+    //   error.data = 'Metric query returns ' + this.series.length +
+    //     ' series. Single Stat Panel expects a single series.\n\nResponse:\n'+JSON.stringify(this.series);
+    //   throw error;
+    // }
 
     if (this.series && this.series.length > 0) {
-      var lastPoint = _.last(this.series[0].datapoints);
-      var lastValue = _.isArray(lastPoint) ? lastPoint[0] : null;
+      for (var i = 0; i< this.series.length; i++){
+        const series: any = {};
+        series.flotpairs = [];
+        data.push(series);
+        var lastPoint = _.last(this.series[i].datapoints);
+        var lastValue = _.isArray(lastPoint) ? lastPoint[i] : null;
 
-      if (this.panel.valueName === 'name') {
-        data.value = 0;
-        data.valueRounded = 0;
-        data.valueFormatted = this.series[0].alias;
-      } else if (_.isString(lastValue)) {
-        data.value = 0;
-        data.valueFormatted = _.escape(lastValue);
-        data.valueRounded = 0;
-      } else {
-        data.value = this.series[0].stats[this.panel.valueName];
-        data.flotpairs = this.series[0].flotpairs;
+        if (this.panel.valueName === 'name') {
+          series.value = 0;
+          series.valueRounded = 0;
+          series.valueFormatted = this.series[0].alias;
+        } else if (_.isString(lastValue)) {
+          series.value = 0;
+          series.valueFormatted = _.escape(lastValue);
+          series.valueRounded = 0;
+        } else {
+          series.value = this.series[i].stats[this.panel.valueName];
+          series.flotpairs = this.series[i].flotpairs;
 
-        var decimalInfo = this.getDecimalsForValue(data.value);
-        var formatFunc = kbn.valueFormats[this.panel.format];
-        data.valueFormatted = formatFunc(data.value, decimalInfo.decimals, decimalInfo.scaledDecimals);
-        data.valueRounded = kbn.roundValue(data.value, decimalInfo.decimals);
+          var decimalInfo = this.getDecimalsForValue(series.value);
+          var formatFunc = kbn.valueFormats[this.panel.format];
+          series.valueFormatted = formatFunc(series.value, decimalInfo.decimals, decimalInfo.scaledDecimals);
+          series.valueRounded = kbn.roundValue(series.value, decimalInfo.decimals);
+        }
+
+        // Add $__name variable for using in prefix or postfix
+        series.scopedVars = _.extend({}, this.panel.scopedVars);
+        series.scopedVars["__name"] = {value: this.series[i].label};
+        this.setValueMapping(series);
       }
 
-      // Add $__name variable for using in prefix or postfix
-      data.scopedVars = _.extend({}, this.panel.scopedVars);
-      data.scopedVars["__name"] = {value: this.series[0].label};
     }
-    this.setValueMapping(data);
+
   }
 
   setValueMapping(data) {
@@ -367,7 +374,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
       elem.css('height', ctrl.height + 'px');
     }
 
-    function applyColoringThresholds(value, valueString) {
+    function applyColoringThresholds(data,value, valueString) {
       if (!panel.colorValue) {
         return valueString;
       }
@@ -391,8 +398,15 @@ class SingleStatCtrl extends MetricsPanelCtrl {
 
       if (panel.prefix) { body += getSpan('singlestat-panel-prefix', panel.prefixFontSize, panel.prefix); }
 
-      var value = applyColoringThresholds(data.value, data.valueFormatted);
-      body += getSpan('singlestat-panel-value', panel.valueFontSize, value);
+      var mergeValue = "";
+      for (var i = 0; i< data.length; i++){
+        if (i>0) {
+          mergeValue += "/";
+        }
+        mergeValue += applyColoringThresholds(data[i],data[i].value, data[i].valueFormatted);
+      }
+
+      body += getSpan('singlestat-panel-value', panel.valueFontSize, mergeValue);
 
       if (panel.postfix) { body += getSpan('singlestat-panel-postfix', panel.postfixFontSize, panel.postfix); }
 
@@ -478,7 +492,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
               width: thresholdMarkersWidth,
             },
             value: {
-              color: panel.colorValue ? getColorForValue(data, data.valueRounded) : null,
+              color: panel.colorValue ? getColorForValue(data[0], data[0].valueRounded) : null,
               formatter: function() { return getValueText(); },
               font: { size: fontSize, family: '"Helvetica Neue", Helvetica, Arial, sans-serif' }
             },
@@ -559,47 +573,49 @@ class SingleStatCtrl extends MetricsPanelCtrl {
       if (!ctrl.data) { return; }
       data = ctrl.data;
 
-      // get thresholds
-      data.thresholds = panel.thresholds.split(',').map(function(strVale) {
-        return Number(strVale.trim());
-      });
-      data.colorMap = panel.colors;
-
-      setElementHeight();
-
-      var body = panel.gauge.show ? '' : getBigValueHtml();
-
-      if (panel.colorBackground && !isNaN(data.value)) {
-        var color = getColorForValue(data, data.value);
-        if (color) {
-          $panelContainer.css('background-color', color);
-          if (scope.fullscreen) {
-            elem.css('background-color', color);
-          } else {
-            elem.css('background-color', '');
-          }
+      if (data && data.length > 0) {
+        for (var i = 0; i< data.length; i++){
+          // get thresholds
+          data[i].thresholds = panel.thresholds.split(',').map(function(strVale) {
+            return Number(strVale.trim());
+          });
+          data[i].colorMap = panel.colors;
         }
-      } else {
-        $panelContainer.css('background-color', '');
-        elem.css('background-color', '');
-      }
 
-      elem.html(body);
+        setElementHeight();
+        var body = panel.gauge.show ? '' : getBigValueHtml();
+        if (panel.colorBackground && !isNaN(data[0].value)) {
+          var color = getColorForValue(data[0], data[0].value);
+          if (color) {
+            $panelContainer.css('background-color', color);
+            if (scope.fullscreen) {
+              elem.css('background-color', color);
+            } else {
+              elem.css('background-color', '');
+            }
+          }
+        } else {
+          $panelContainer.css('background-color', '');
+          elem.css('background-color', '');
+        }
 
-      if (panel.sparkline.show) {
-        addSparkline();
-      }
+        elem.html(body);
 
-      if (panel.gauge.show) {
-        addGauge();
-      }
+        if (panel.sparkline.show) {
+          addSparkline();
+        }
 
-      elem.toggleClass('pointer', panel.links.length > 0);
+        if (panel.gauge.show) {
+          addGauge();
+        }
 
-      if (panel.links.length > 0) {
-        linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
-      } else {
-        linkInfo = null;
+        elem.toggleClass('pointer', panel.links.length > 0);
+
+        if (panel.links.length > 0) {
+          linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
+        } else {
+          linkInfo = null;
+        }
       }
     }
 
