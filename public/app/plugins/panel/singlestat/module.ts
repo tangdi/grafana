@@ -417,7 +417,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
 
     function getValueText() {
       var result = panel.prefix ? panel.prefix : '';
-      result += data.valueFormatted;
+      result += data[0].valueFormatted;
       result += panel.postfix ? panel.postfix : '';
 
       return result;
@@ -446,15 +446,15 @@ class SingleStatCtrl extends MetricsPanelCtrl {
       plotCanvas.css(plotCss);
 
       var thresholds = [];
-      for (var i = 0; i < data.thresholds.length; i++) {
+      for (var i = 0; i < data[0].thresholds.length; i++) {
         thresholds.push({
-          value: data.thresholds[i],
-          color: data.colorMap[i]
+          value: data[0].thresholds[i],
+          color: data[0].colorMap[i]
         });
       }
       thresholds.push({
         value: panel.gauge.maxValue,
-        color: data.colorMap[data.colorMap.length  - 1]
+        color: data[0].colorMap[data[0].colorMap.length  - 1]
       });
 
       var bgColor = config.bootData.user.lightTheme
@@ -504,7 +504,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
       elem.append(plotCanvas);
 
       var plotSeries = {
-        data: [[0, data.valueRounded]]
+        data: [[0, data[0].valueRounded]]
       };
 
       $.plot(plotCanvas, [plotSeries], options);
