@@ -562,7 +562,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
       elem.append(plotCanvas);
 
       var plotSeries = {
-        data: data.flotpairs,
+        data: data[0].flotpairs,
         color: panel.sparkline.lineColor
       };
 
