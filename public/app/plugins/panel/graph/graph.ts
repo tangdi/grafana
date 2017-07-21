@@ -745,7 +745,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
             scopedVars["alias"] = {"value": alias};
 
             if (drilldown.separator && drilldown.separator.trim().length>0){
-              var values = alias.split(drilldown.separator);
+              var values = alias.split(new RegExp(drilldown.separator));
               for (var i = 0; i < values.length; i++ ){
                 scopedVars["alias"+i] = {"value": values[i]};
               }

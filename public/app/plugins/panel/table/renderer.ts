@@ -142,7 +142,7 @@ export class TableRenderer {
         scopedVars[columnText] = {"value": value};
 
         if (drilldown.separator && drilldown.separator.trim().length>0){
-          var values = value.split(drilldown.separator);
+          var values = value.split( new RegExp(drilldown.separator));
           for (var i = 0; i < values.length; i++ ){
             scopedVars["alias"+i] = {"value": values[i]};
           }
