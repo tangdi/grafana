@@ -266,6 +266,48 @@ function (queryDef) {
     return query;
   };
 
+  ElasticQueryBuilder.prototype.getScrollQuery = function(target, adhocFilters, queryString,from,size,source,sort) {
+    // make sure query has defaults;
+    target.metrics = target.metrics || [{ type: 'count', id: '1' }];
+    target.dsType = 'elasticsearch';
+    target.bucketAggs = target.bucketAggs || [{type: 'date_histogram', id: '2', settings: {interval: 'auto'}}];
+    target.timeField =  this.timeField;
+
+    var metric;
+    var query = {
+      "from": from,
+      "size": size,
+      "_source": source,
+      "query": {
+        "bool": {
+          "filter": [
+            {"range": this.getRangeFilter()},
+            {
+              "query_string": {
+                "analyze_wildcard": true,
+                "query": queryString,
+              }
+            }
+          ]
+        }
+      },
+      "sort": sort
+    };
+
+    this.addAdhocFilters(query, adhocFilters);
+
+    // handle document query
+    if (target.bucketAggs.length === 0) {
+      metric = target.metrics[0];
+      if (metric && metric.type !== 'raw_document') {
+        throw {message: 'Invalid query'};
+      }
+      return this.documentQuery(query, target);
+    }
+
+    return query;
+  };
+
   ElasticQueryBuilder.prototype.getTermsQuery = function(queryDef) {
     var query = {
       "size": 0,

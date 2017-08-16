@@ -1,364 +1,430 @@
 define([
-  'angular',
-  'lodash',
-  'moment',
-  'app/core/utils/kbn',
-  './query_builder',
-  './index_pattern',
-  './elastic_response',
-  './query_ctrl',
-],
-function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticResponse) {
-  'use strict';
+    'angular',
+    'lodash',
+    'moment',
+    'app/core/utils/kbn',
+    './query_builder',
+    './index_pattern',
+    './elastic_response',
+    './query_ctrl',
+  ],
+  function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticResponse) {
+    'use strict';
 
-  /** @ngInject */
-  function ElasticDatasource(instanceSettings, $q, backendSrv, templateSrv, timeSrv) {
-    this.basicAuth = instanceSettings.basicAuth;
-    this.withCredentials = instanceSettings.withCredentials;
-    this.url = instanceSettings.url;
-    this.name = instanceSettings.name;
-    this.index = instanceSettings.index;
-    this.timeField = instanceSettings.jsonData.timeField;
-    this.esVersion = instanceSettings.jsonData.esVersion;
-    this.indexPattern = new IndexPattern(instanceSettings.index, instanceSettings.jsonData.interval);
-    this.interval = instanceSettings.jsonData.timeInterval;
-    this.queryBuilder = new ElasticQueryBuilder({
-      timeField: this.timeField,
-      esVersion: this.esVersion,
-    });
-
-    this._request = function(method, url, data) {
-      var options = {
-        url: this.url + "/" + url,
-        method: method,
-        data: data
-      };
-
-      if (this.basicAuth || this.withCredentials) {
-        options.withCredentials = true;
-      }
-      if (this.basicAuth) {
-        options.headers = {
-          "Authorization": this.basicAuth
-        };
-      }
-
-      return backendSrv.datasourceRequest(options);
-    };
-
-    this._get = function(url) {
-      var range = timeSrv.timeRange();
-      var index_list = this.indexPattern.getIndexList(range.from.valueOf(), range.to.valueOf());
-      if (_.isArray(index_list) && index_list.length) {
-        return this._request('GET', index_list[0] + url).then(function(results) {
-          results.data.$$config = results.config;
-          return results.data;
-        });
-      } else {
-        return this._request('GET', this.indexPattern.getIndexForToday() + url).then(function(results) {
-          results.data.$$config = results.config;
-          return results.data;
-        });
-      }
-    };
-
-    this._post = function(url, data) {
-      return this._request('POST', url, data).then(function(results) {
-        results.data.$$config = results.config;
-        return results.data;
+    /** @ngInject */
+    function ElasticDatasource(instanceSettings, $q, backendSrv, templateSrv, timeSrv) {
+      this.basicAuth = instanceSettings.basicAuth;
+      this.withCredentials = instanceSettings.withCredentials;
+      this.url = instanceSettings.url;
+      this.name = instanceSettings.name;
+      this.index = instanceSettings.index;
+      this.timeField = instanceSettings.jsonData.timeField;
+      this.esVersion = instanceSettings.jsonData.esVersion;
+      this.indexPattern = new IndexPattern(instanceSettings.index, instanceSettings.jsonData.interval);
+      this.interval = instanceSettings.jsonData.timeInterval;
+      this.queryBuilder = new ElasticQueryBuilder({
+        timeField: this.timeField,
+        esVersion: this.esVersion,
       });
-    };
 
-    this.annotationQuery = function(options) {
-      var annotation = options.annotation;
-      var timeField = annotation.timeField || '@timestamp';
-      var queryString = annotation.query || '*';
-      var tagsField = annotation.tagsField || 'tags';
-      var titleField = annotation.titleField || 'desc';
-      var textField = annotation.textField || null;
+      this._request = function (method, url, data) {
+        var options = {
+          url: this.url + "/" + url,
+          method: method,
+          data: data
+        };
 
-      var range = {};
-      range[timeField]= {
-        from: options.range.from.valueOf(),
-        to: options.range.to.valueOf(),
-        format: "epoch_millis",
+        if (this.basicAuth || this.withCredentials) {
+          options.withCredentials = true;
+        }
+        if (this.basicAuth) {
+          options.headers = {
+            "Authorization": this.basicAuth
+          };
+        }
+
+        return backendSrv.datasourceRequest(options);
       };
 
-      var queryInterpolated = templateSrv.replace(queryString, {}, 'lucene');
-      var query = {
-        "bool": {
-          "filter": [
-            { "range": range },
-            {
-              "query_string": {
-                "query": queryInterpolated
-              }
-            }
-          ]
+      this._get = function (url) {
+        var range = timeSrv.timeRange();
+        var index_list = this.indexPattern.getIndexList(range.from.valueOf(), range.to.valueOf());
+        if (_.isArray(index_list) && index_list.length) {
+          return this._request('GET', index_list[0] + url).then(function (results) {
+            results.data.$$config = results.config;
+            return results.data;
+          });
+        } else {
+          return this._request('GET', this.indexPattern.getIndexForToday() + url).then(function (results) {
+            results.data.$$config = results.config;
+            return results.data;
+          });
         }
       };
 
-      var data = {
-        "query" : query,
-        "size": 10000
+      this._post = function (url, data) {
+        return this._request('POST', url, data).then(function (results) {
+          results.data.$$config = results.config;
+          return results.data;
+        });
       };
 
-      // fields field not supported on ES 5.x
-      if (this.esVersion < 5) {
-        data["fields"] = [timeField, "_source"];
-      }
+      this.annotationQuery = function (options) {
+        var annotation = options.annotation;
+        var timeField = annotation.timeField || '@timestamp';
+        var queryString = annotation.query || '*';
+        var tagsField = annotation.tagsField || 'tags';
+        var titleField = annotation.titleField || 'desc';
+        var textField = annotation.textField || null;
 
-      var header = {search_type: "query_then_fetch", "ignore_unavailable": true};
-
-      // old elastic annotations had index specified on them
-      if (annotation.index) {
-        header.index = annotation.index;
-      } else {
-        header.index = this.indexPattern.getIndexList(options.range.from, options.range.to);
-      }
-
-      var payload = angular.toJson(header) + '\n' + angular.toJson(data) + '\n';
-
-      return this._post('_msearch', payload).then(function(res) {
-        var list = [];
-        var hits = res.responses[0].hits.hits;
-
-        var getFieldFromSource = function(source, fieldName) {
-          if (!fieldName) { return; }
-
-          var fieldNames = fieldName.split('.');
-          var fieldValue = source;
-
-          for (var i = 0; i < fieldNames.length; i++) {
-            fieldValue = fieldValue[fieldNames[i]];
-            if (!fieldValue) {
-              console.log('could not find field in annotation: ', fieldName);
-              return '';
-            }
-          }
-
-          if (_.isArray(fieldValue)) {
-            fieldValue = fieldValue.join(', ');
-          }
-          return fieldValue;
+        var range = {};
+        range[timeField] = {
+          from: options.range.from.valueOf(),
+          to: options.range.to.valueOf(),
+          format: "epoch_millis",
         };
 
-        for (var i = 0; i < hits.length; i++) {
-          var source = hits[i]._source;
-          var time = source[timeField];
-          if (typeof hits[i].fields !== 'undefined') {
-            var fields = hits[i].fields;
-            if (_.isString(fields[timeField]) || _.isNumber(fields[timeField])) {
-              time = fields[timeField];
-            }
+        var queryInterpolated = templateSrv.replace(queryString, {}, 'lucene');
+        var query = {
+          "bool": {
+            "filter": [
+              {"range": range},
+              {
+                "query_string": {
+                  "query": queryInterpolated
+                }
+              }
+            ]
           }
+        };
 
-          var event = {
-            annotation: annotation,
-            time: moment.utc(time).valueOf(),
-            title: getFieldFromSource(source, titleField),
-            tags: getFieldFromSource(source, tagsField),
-            text: getFieldFromSource(source, textField)
+        var data = {
+          "query": query,
+          "size": 10000
+        };
+
+        // fields field not supported on ES 5.x
+        if (this.esVersion < 5) {
+          data["fields"] = [timeField, "_source"];
+        }
+
+        var header = {search_type: "query_then_fetch", "ignore_unavailable": true};
+
+        // old elastic annotations had index specified on them
+        if (annotation.index) {
+          header.index = annotation.index;
+        } else {
+          header.index = this.indexPattern.getIndexList(options.range.from, options.range.to);
+        }
+
+        var payload = angular.toJson(header) + '\n' + angular.toJson(data) + '\n';
+
+        return this._post('_msearch', payload).then(function (res) {
+          var list = [];
+          var hits = res.responses[0].hits.hits;
+
+          var getFieldFromSource = function (source, fieldName) {
+            if (!fieldName) {
+              return;
+            }
+
+            var fieldNames = fieldName.split('.');
+            var fieldValue = source;
+
+            for (var i = 0; i < fieldNames.length; i++) {
+              fieldValue = fieldValue[fieldNames[i]];
+              if (!fieldValue) {
+                console.log('could not find field in annotation: ', fieldName);
+                return '';
+              }
+            }
+
+            if (_.isArray(fieldValue)) {
+              fieldValue = fieldValue.join(', ');
+            }
+            return fieldValue;
           };
 
-          list.push(event);
-        }
-        return list;
-      });
-    };
+          for (var i = 0; i < hits.length; i++) {
+            var source = hits[i]._source;
+            var time = source[timeField];
+            if (typeof hits[i].fields !== 'undefined') {
+              var fields = hits[i].fields;
+              if (_.isString(fields[timeField]) || _.isNumber(fields[timeField])) {
+                time = fields[timeField];
+              }
+            }
 
-    this.testDatasource = function() {
-      timeSrv.setTime({ from: 'now-1m', to: 'now' }, true);
-      // validate that the index exist and has date field
-      return this.getFields({type: 'date'}).then(function(dateFields) {
-        var timeField = _.find(dateFields, {text: this.timeField});
-        if (!timeField) {
-          return { status: "error", message: "No date field named " + this.timeField + ' found', title: "Error" };
-        }
-        return { status: "success", message: "Index OK. Time field name OK.", title: "Success" };
-      }.bind(this), function(err) {
-        console.log(err);
-        if (err.data && err.data.error) {
-          var message = angular.toJson(err.data.error);
-          if (err.data.error.reason) {
-            message = err.data.error.reason;
+            var event = {
+              annotation: annotation,
+              time: moment.utc(time).valueOf(),
+              title: getFieldFromSource(source, titleField),
+              tags: getFieldFromSource(source, tagsField),
+              text: getFieldFromSource(source, textField)
+            };
+
+            list.push(event);
           }
-          return { status: "error", message: message, title: "Error" };
+          return list;
+        });
+      };
+
+      this.testDatasource = function () {
+        timeSrv.setTime({from: 'now-1m', to: 'now'}, true);
+        // validate that the index exist and has date field
+        return this.getFields({type: 'date'}).then(function (dateFields) {
+          var timeField = _.find(dateFields, {text: this.timeField});
+          if (!timeField) {
+            return {status: "error", message: "No date field named " + this.timeField + ' found', title: "Error"};
+          }
+          return {status: "success", message: "Index OK. Time field name OK.", title: "Success"};
+        }.bind(this), function (err) {
+          console.log(err);
+          if (err.data && err.data.error) {
+            var message = angular.toJson(err.data.error);
+            if (err.data.error.reason) {
+              message = err.data.error.reason;
+            }
+            return {status: "error", message: message, title: "Error"};
+          } else {
+            return {status: "error", message: err.status, title: "Error"};
+          }
+        });
+      };
+
+      this.getQueryHeader = function (searchType, timeFrom, timeTo) {
+        var header = {search_type: searchType, "ignore_unavailable": true};
+        header.index = this.indexPattern.getIndexList(timeFrom, timeTo);
+        return angular.toJson(header);
+      };
+
+      this.isExtensionLine = function (options) {
+        return options.series !== void 0 && options.series !== null &&
+          options.series.extensionLine !== void 0 && options.series.extensionLine;
+      };
+
+      this.query = function (options) {
+        var payload = "";
+        var extensionPayload = "";
+        var target;
+        var sentTargets = [];
+
+        var shouldExtension = this.isExtensionLine(options);
+
+        // add global adhoc filters to timeFilter
+        var adhocFilters = templateSrv.getAdhocFilters(this.name);
+
+        for (var i = 0; i < options.targets.length; i++) {
+          target = options.targets[i];
+          if (target.hide) {
+            continue;
+          }
+
+          var queryString = templateSrv.replace(target.query || '*', options.scopedVars, 'lucene');
+          var queryObj = this.queryBuilder.build(target, adhocFilters, queryString);
+          var esQuery = angular.toJson(queryObj);
+
+          var searchType = (queryObj.size === 0 && this.esVersion < 5) ? 'count' : 'query_then_fetch';
+          var header = this.getQueryHeader(searchType, options.range.from, options.range.to);
+          payload += header + '\n';
+          payload += esQuery + '\n';
+
+          if (shouldExtension) {
+            var sort = [
+              {
+                "timestamp": {
+                  "order": "desc"
+                }
+              }
+            ];
+
+            var source = [];
+            for (var k = 0; k < target.metrics.length; k++) {
+              source.push(target.metrics[k].field);
+            }
+
+            var extensionQueryObj = this.queryBuilder.getScrollQuery(target, adhocFilters, queryString, 0, 1, source, sort);
+            var extensionEsQuery = angular.toJson(extensionQueryObj);
+            extensionPayload += header + '\n';
+            extensionPayload += extensionEsQuery + '\n';
+          }
+
+          sentTargets.push(target);
+        }
+
+        if (sentTargets.length === 0) {
+          return $q.when([]);
+        }
+
+        var startTimestamp = options.range.from.valueOf();
+        var endTimestamp = options.range.to.valueOf();
+
+        payload = payload.replace(/\$timeFrom/g, startTimestamp);
+        payload = payload.replace(/\$timeTo/g, endTimestamp);
+        payload = templateSrv.replace(payload, options.scopedVars);
+
+        var extensionTimestamp = startTimestamp - 86400000;
+
+        if (shouldExtension) {
+          //before 1 days
+          extensionPayload = extensionPayload.replace(/\$timeFrom/g, extensionTimestamp);
+          extensionPayload = extensionPayload.replace(/\$timeTo/g, startTimestamp);
+          extensionPayload = templateSrv.replace(extensionPayload, options.scopedVars);
+
+          return this._post('_msearch', payload + extensionPayload).then(function (res) {
+            //merge data
+            var extensionData = res.responses[1];
+            var item = {
+              "1": {
+                "value": 0
+              },
+              "key_as_string": startTimestamp.toString(),
+              "key": startTimestamp,
+              "doc_count": 1
+            };
+
+            if (extensionData.hits && extensionData.hits.hits && extensionData.hits.hits.length === 1) {
+              var source = extensionData.hits.hits[0]._source;
+              item["1"].value = source["risk"];
+            }
+
+            var firstDataTimestamp =  res.responses[0].aggregations["2"].buckets[0].key;
+
+            if(firstDataTimestamp>startTimestamp){
+              res.responses[0].aggregations["2"].buckets.unshift(item);
+            }
+
+            res.responses.pop();
+            return new ElasticResponse(sentTargets, res).getTimeSeries();
+          });
         } else {
-          return { status: "error", message: err.status, title: "Error" };
+          return this._post('_msearch', payload).then(function (res) {
+            return new ElasticResponse(sentTargets, res).getTimeSeries();
+          });
         }
-      });
-    };
+      };
 
-    this.getQueryHeader = function(searchType, timeFrom, timeTo) {
-      var header = {search_type: searchType, "ignore_unavailable": true};
-      header.index = this.indexPattern.getIndexList(timeFrom, timeTo);
-      return angular.toJson(header);
-    };
+      this.getFields = function (query) {
+        return this._get('/_mapping').then(function (result) {
 
-    this.query = function(options) {
-      var payload = "";
-      var target;
-      var sentTargets = [];
+          var typeMap = {
+            'float': 'number',
+            'double': 'number',
+            'integer': 'number',
+            'long': 'number',
+            'date': 'date',
+            'string': 'string',
+            'text': 'string',
+            'scaled_float': 'number',
+            'nested': 'nested'
+          };
 
-      // add global adhoc filters to timeFilter
-      var adhocFilters = templateSrv.getAdhocFilters(this.name);
+          function shouldAddField(obj, key, query) {
+            if (key[0] === '_') {
+              return false;
+            }
 
-      for (var i = 0; i < options.targets.length; i++) {
-        target = options.targets[i];
-        if (target.hide) {continue;}
+            if (!query.type) {
+              return true;
+            }
 
-        var queryString = templateSrv.replace(target.query || '*', options.scopedVars, 'lucene');
-        var queryObj = this.queryBuilder.build(target, adhocFilters, queryString);
-        var esQuery = angular.toJson(queryObj);
-
-        var searchType = (queryObj.size === 0 && this.esVersion < 5) ? 'count' : 'query_then_fetch';
-        var header = this.getQueryHeader(searchType, options.range.from, options.range.to);
-        payload +=  header + '\n';
-
-        payload += esQuery + '\n';
-        sentTargets.push(target);
-      }
-
-      if (sentTargets.length === 0) {
-        return $q.when([]);
-      }
-
-      if (options.series !== void 0 && options.series !== null && options.series.extensionLine !== void 0 && options.series.extensionLine){
-        payload = payload.replace(/\$timeFrom/g, options.range.from.subtract(12, 'minute').valueOf());
-      } else {
-        payload = payload.replace(/\$timeFrom/g, options.range.from.valueOf());
-      }
-
-      payload = payload.replace(/\$timeTo/g, options.range.to.valueOf());
-      payload = templateSrv.replace(payload, options.scopedVars);
-
-      return this._post('_msearch', payload).then(function(res) {
-        return new ElasticResponse(sentTargets, res).getTimeSeries();
-      });
-    };
-
-    this.getFields = function(query) {
-      return this._get('/_mapping').then(function(result) {
-
-        var typeMap = {
-          'float': 'number',
-          'double': 'number',
-          'integer': 'number',
-          'long': 'number',
-          'date': 'date',
-          'string': 'string',
-          'text': 'string',
-          'scaled_float': 'number',
-          'nested': 'nested'
-        };
-
-        function shouldAddField(obj, key, query) {
-          if (key[0] === '_') {
-            return false;
+            // equal query type filter, or via typemap translation
+            return query.type === obj.type || query.type === typeMap[obj.type];
           }
 
-          if (!query.type) {
-            return true;
+          // Store subfield names: [system, process, cpu, total] -> system.process.cpu.total
+          var fieldNameParts = [];
+          var fields = {};
+
+          function getFieldsRecursively(obj) {
+            for (var key in obj) {
+              var subObj = obj[key];
+
+              // Check mapping field for nested fields
+              if (subObj.hasOwnProperty('properties')) {
+                fieldNameParts.push(key);
+                getFieldsRecursively(subObj.properties);
+              } else {
+                var fieldName = fieldNameParts.concat(key).join('.');
+
+                // Hide meta-fields and check field type
+                if (shouldAddField(subObj, key, query)) {
+                  fields[fieldName] = {
+                    text: fieldName,
+                    type: subObj.type
+                  };
+                }
+              }
+            }
+            fieldNameParts.pop();
           }
 
-          // equal query type filter, or via typemap translation
-          return query.type === obj.type || query.type === typeMap[obj.type];
-        }
-
-        // Store subfield names: [system, process, cpu, total] -> system.process.cpu.total
-        var fieldNameParts = [];
-        var fields = {};
-
-        function getFieldsRecursively(obj) {
-          for (var key in obj) {
-            var subObj = obj[key];
-
-            // Check mapping field for nested fields
-            if (subObj.hasOwnProperty('properties')) {
-              fieldNameParts.push(key);
-              getFieldsRecursively(subObj.properties);
-            } else {
-              var fieldName = fieldNameParts.concat(key).join('.');
-
-              // Hide meta-fields and check field type
-              if (shouldAddField(subObj, key, query)) {
-                fields[fieldName] = {
-                  text: fieldName,
-                  type: subObj.type
-                };
+          for (var indexName in result) {
+            var index = result[indexName];
+            if (index && index.mappings) {
+              var mappings = index.mappings;
+              for (var typeName in mappings) {
+                var properties = mappings[typeName].properties;
+                getFieldsRecursively(properties);
               }
             }
           }
-          fieldNameParts.pop();
-        }
 
-        for (var indexName in result) {
-          var index = result[indexName];
-          if (index && index.mappings) {
-            var mappings = index.mappings;
-            for (var typeName in mappings) {
-              var properties = mappings[typeName].properties;
-              getFieldsRecursively(properties);
-            }
+          // transform to array
+          return _.map(fields, function (value) {
+            return value;
+          });
+        });
+      };
+
+      this.getTerms = function (queryDef) {
+        var range = timeSrv.timeRange();
+        var searchType = this.esVersion >= 5 ? 'query_then_fetch' : 'count';
+        var header = this.getQueryHeader(searchType, range.from, range.to);
+        var esQuery = angular.toJson(this.queryBuilder.getTermsQuery(queryDef));
+
+        esQuery = esQuery.replace(/\$timeFrom/g, range.from.valueOf());
+        esQuery = esQuery.replace(/\$timeTo/g, range.to.valueOf());
+        esQuery = header + '\n' + esQuery + '\n';
+
+        return this._post('_msearch?search_type=' + searchType, esQuery).then(function (res) {
+          if (!res.responses[0].aggregations) {
+            return [];
           }
+
+          var buckets = res.responses[0].aggregations["1"].buckets;
+          return _.map(buckets, function (bucket) {
+            return {text: bucket.key, value: bucket.key};
+          });
+        });
+      };
+
+      this.metricFindQuery = function (query) {
+        query = angular.fromJson(query);
+        query.query = templateSrv.replace(query.query || '*', {}, 'lucene');
+
+        if (!query) {
+          return $q.when([]);
         }
 
-        // transform to array
-        return _.map(fields, function(value) {
-          return value;
-        });
-      });
-    };
-
-    this.getTerms = function(queryDef) {
-      var range = timeSrv.timeRange();
-      var searchType = this.esVersion >= 5 ? 'query_then_fetch' : 'count' ;
-      var header = this.getQueryHeader(searchType, range.from, range.to);
-      var esQuery = angular.toJson(this.queryBuilder.getTermsQuery(queryDef));
-
-      esQuery = esQuery.replace(/\$timeFrom/g, range.from.valueOf());
-      esQuery = esQuery.replace(/\$timeTo/g, range.to.valueOf());
-      esQuery = header + '\n' + esQuery + '\n';
-
-      return this._post('_msearch?search_type=' + searchType, esQuery).then(function(res) {
-        if (!res.responses[0].aggregations) {
-          return [];
+        if (query.find === 'fields') {
+          return this.getFields(query);
         }
+        if (query.find === 'terms') {
+          return this.getTerms(query);
+        }
+      };
 
-        var buckets = res.responses[0].aggregations["1"].buckets;
-        return _.map(buckets, function(bucket) {
-          return {text: bucket.key, value: bucket.key};
-        });
-      });
+      this.getTagKeys = function () {
+        return this.getFields({});
+      };
+
+      this.getTagValues = function (options) {
+        return this.getTerms({field: options.key, query: '*'});
+      };
+    }
+
+    return {
+      ElasticDatasource: ElasticDatasource
     };
-
-    this.metricFindQuery = function(query) {
-      query = angular.fromJson(query);
-      query.query = templateSrv.replace(query.query || '*', {}, 'lucene');
-
-      if (!query) {
-        return $q.when([]);
-      }
-
-      if (query.find === 'fields') {
-        return this.getFields(query);
-      }
-      if (query.find === 'terms') {
-        return this.getTerms(query);
-      }
-    };
-
-    this.getTagKeys = function() {
-      return this.getFields({});
-    };
-
-    this.getTagValues = function(options) {
-      return this.getTerms({field: options.key, query: '*'});
-    };
-  }
-
-  return {
-    ElasticDatasource: ElasticDatasource
-  };
-});
+  });
