@@ -65,21 +65,8 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           var series = data[i];
           //update extension line
           if (series.extensionLine !== void 0 && series.extensionLine){
-            var minTimestampRange = ctrl.range.from.valueOf();
-            var maxTimestampRange = ctrl.range.to.valueOf();
 
-            var lastValue = 0;
-            if (series.datapoints.length === 0){
-              //not any data
-              //series.datapoints = new Array(new Array(lastValue,ctrl.range.from.valueOf()));
-
-            }else{
-              // var minTimestamp = series.datapoints[0][1];
-              // if (minTimestamp > ctrl.range.from.valueOf()){
-              //   series.datapoints.unshift(new Array(lastValue,ctrl.range.from.valueOf()));
-              // }
-            }
-
+            //add extension line in right side
             if (series.datapoints.length > 0) {
               var maxTimestamp = series.datapoints[series.datapoints.length - 1][1];
               if (maxTimestamp < ctrl.range.to.valueOf()) {
