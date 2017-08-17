@@ -285,6 +285,7 @@ define([
 
             if (extensionData.hits && extensionData.hits.hits && extensionData.hits.hits.length === 1) {
               var source = extensionData.hits.hits[0]._source;
+              //todo should remove the hardcode source name
               item["1"].value = source["risk"];
             }
 
