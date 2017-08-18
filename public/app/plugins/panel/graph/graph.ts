@@ -92,7 +92,7 @@ coreModule.directive('grafanaGraph', function($rootScope, timeSrv, popoverSrv) {
           return;
         }
 
-        tooltip.show(evt.pos);
+        tooltip.show(evt.pos,null,ctrl);
       }, scope);
 
       appEvents.on('graph-hover-clear', function(event, info) {

@@ -289,9 +289,13 @@ define([
               item["1"].value = source["risk"];
             }
 
-            var firstDataTimestamp =  res.responses[0].aggregations["2"].buckets[0].key;
+            if(res.responses[0].aggregations["2"].buckets.length >0){
+              var firstDataTimestamp =  res.responses[0].aggregations["2"].buckets[0].key;
 
-            if(firstDataTimestamp>startTimestamp){
+              if(firstDataTimestamp>startTimestamp){
+                res.responses[0].aggregations["2"].buckets.unshift(item);
+              }
+            }else{
               res.responses[0].aggregations["2"].buckets.unshift(item);
             }
 

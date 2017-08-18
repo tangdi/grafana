@@ -155,7 +155,7 @@ function ($, core) {
     });
 
     elem.bind("plothover", function (event, pos, item) {
-      self.show(pos, item);
+      self.show(pos, item, ctrl);
 
       // broadcast to other graph panels that we are hovering!
       pos.panelRelY = (pos.pageY - elem.offset().top) / elem.height();
@@ -172,13 +172,15 @@ function ($, core) {
       plot.unhighlight();
     };
 
-    this.show = function(pos, item) {
+    this.show = function(pos, item, ctrl) {
       var plot = elem.data().plot;
       var plotData = plot.getData();
       var xAxes = plot.getXAxes();
       var xMode = xAxes[0].options.mode;
       var seriesList = getSeriesFn();
       var allSeriesMode = panel.tooltip.shared;
+      var annotations = ctrl.annotations || [];
+
       var group, value, absoluteTime, hoverInfo, i, series, seriesHtml, tooltipFormat;
 
       // if panelRelY is defined another panel wants us to show a tooltip
@@ -256,6 +258,23 @@ function ($, core) {
           seriesHtml += '<i class="fa fa-minus" style="color:' + hoverInfo.color +';"></i> ' + hoverInfo.label + ':</div>';
           seriesHtml += '<div class="graph-tooltip-value">' + value + '</div></div>';
           plot.highlight(hoverInfo.index, hoverInfo.hoverIndex);
+        }
+
+        //try to show annotations
+        for (i = 0; i < annotations.length; i++) {
+          var annotation = annotations[i];
+          if(!annotation.annotation.showInTooltip){
+            break;
+          }
+
+          if(annotation.time <= seriesHoverInfo.time){
+            seriesHtml += '<div class="graph-tooltip-list-item"><div class="graph-tooltip-series-name">';
+            seriesHtml += '<i class="fa fa-minus" style="color:' + annotation.annotation.iconColor +';"></i> ';
+            seriesHtml += annotation.eventType + ':</div><div class="graph-tooltip-value">';
+            seriesHtml +=  annotation.title + ' ' +annotation.tags + '<br/>' + annotation.text;
+            seriesHtml += '</div></div>';
+            break;
+          }
         }
 
         self.renderAndShow(absoluteTime, seriesHtml, pos, xMode);

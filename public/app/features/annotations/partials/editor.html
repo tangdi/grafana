@@ -91,7 +91,7 @@
 						</div>
 						<div class="gf-form">
 							<span class="gf-form-label width-9">Data source</span>
-							<div class="gf-form-select-wrapper width-12">
+							<div class="gf-form-select-wrapper width-13">
 								<select class="gf-form-input" ng-model="ctrl.currentAnnotation.datasource" ng-options="f.name as f.name for f in ctrl.datasources" ng-change="ctrl.datasourceChanged()"></select>
 							</div>
 						</div>
@@ -110,6 +110,12 @@
 															checked="ctrl.currentAnnotation.hide"
 															label-class="width-9">
 							</gf-form-switch>
+              <gf-form-switch class="gf-form"
+                              label="Show in Tooltip"
+                              tooltip="show the the annotation data in the tooltip"
+                              checked="ctrl.currentAnnotation.showInTooltip"
+                              label-class="width-12">
+              </gf-form-switch>
 						</div>
 						<div class="gf-form">
 							<label class="gf-form-label width-9">Color</label>
