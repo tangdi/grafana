@@ -98,9 +98,17 @@ define([
           }
         };
 
+        var sort = {};
+        sort[timeField] = {
+          "order": "desc"
+        };
+
         var data = {
           "query": query,
-          "size": 10000
+          "size": 10000,
+          "sort": [
+            sort
+          ]
         };
 
         // fields field not supported on ES 5.x
