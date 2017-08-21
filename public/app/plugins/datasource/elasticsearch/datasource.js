@@ -100,8 +100,15 @@ define([
 
         var data = {
           "query": query,
-          "size": 10000
+          "size": 10000,
+          "sort": []
         };
+
+        var sort = {};
+        sort[timeField] = {
+          "order": "desc"
+        };
+        data.sort.push(sort);
 
         // fields field not supported on ES 5.x
         if (this.esVersion < 5) {
@@ -289,13 +296,13 @@ define([
               item["1"].value = source["risk"];
             }
 
-            if(res.responses[0].aggregations["2"].buckets.length >0){
-              var firstDataTimestamp =  res.responses[0].aggregations["2"].buckets[0].key;
+            if (res.responses[0].aggregations["2"].buckets.length > 0) {
+              var firstDataTimestamp = res.responses[0].aggregations["2"].buckets[0].key;
 
-              if(firstDataTimestamp>startTimestamp){
+              if (firstDataTimestamp > startTimestamp) {
                 res.responses[0].aggregations["2"].buckets.unshift(item);
               }
-            }else{
+            } else {
               res.responses[0].aggregations["2"].buckets.unshift(item);
             }
 
