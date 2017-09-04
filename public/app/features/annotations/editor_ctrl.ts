@@ -19,6 +19,7 @@ export class AnnotationsEditorCtrl {
     iconColor: 'rgba(255, 96, 96, 1)',
     enable: true,
     showIn: 0,
+    showLine: true,
     showInTooltip: false,
     hide: false,
   };

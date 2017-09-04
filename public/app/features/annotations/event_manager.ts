@@ -103,6 +103,7 @@ export class EventManager {
             color: item.source.iconColor,
             position: 'BOTTOM',
             markerSize: 5,
+            lineWidth: item.source.showLine ? 1 : 0
           };
         }
       }
