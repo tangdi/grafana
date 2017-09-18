@@ -206,7 +206,7 @@ module.directive('grafanaPanel', function($rootScope, $document) {
 
         //add panel.scopedVars for repeat var
         if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
-          scopedVars[panel.repeat] = panel.scopedVars[panel.repeat].value;
+          scopedVars[panel.repeat] = {"value": panel.scopedVars[panel.repeat].value};
         }
 
         var info = linkSrv.getPanelLinkAnchorInfo(link,scopedVars);

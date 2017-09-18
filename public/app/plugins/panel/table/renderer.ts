@@ -150,7 +150,7 @@ export class TableRenderer {
 
         //add panel.scopedVars for repeat var
         if (panel.repeat && panel.scopedVars[panel.repeat] && panel.scopedVars[panel.repeat].value){
-          scopedVars[panel.repeat] = panel.scopedVars[panel.repeat].value;
+          scopedVars[panel.repeat] = {"value": panel.scopedVars[panel.repeat].value};
         }
 
         var link = linkSrv.getPanelLinkAnchorInfo(drilldown,scopedVars);
