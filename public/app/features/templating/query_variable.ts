@@ -25,6 +25,9 @@ export class QueryVariable implements Variable {
   tagsQuery: string;
   tagValuesQuery: string;
   tags: any[];
+  realtime: boolean;
+  realtiemSize: number;
+  realtimeMinInput: number;
 
   defaults = {
     type: 'query',
@@ -45,6 +48,9 @@ export class QueryVariable implements Variable {
     useTags: false,
     tagsQuery: "",
     tagValuesQuery: "",
+    realtime: false,
+    realtiemSize: 100,
+    realtimeMinInput: 3,
   };
 
   /** @ngInject **/

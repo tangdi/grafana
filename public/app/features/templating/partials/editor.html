@@ -199,7 +199,10 @@
           </div>
         </div>
         <div class="gf-form">
-          <span class="gf-form-label width-7">Query</span>
+          <span class="gf-form-label width-7">Query<info-popover mode="right-normal">
+              Elasticsearch: <br/>{"type": "keyword", "find": "terms", "field": "subjectIds", "query": "subjectTypes:$subjectTypes","size": 500,"order":"_count","desc":true}
+            </info-popover>
+          </span>
           <input type="text" class="gf-form-input" ng-model='current.query' placeholder="metric name or tags query" ng-model-onblur ng-change="runQuery()" required></input>
         </div>
         <div class="gf-form">
@@ -281,6 +284,21 @@
         <div class="gf-form" ng-if="current.includeAll">
           <span class="gf-form-label width-10">Custom all value</span>
           <input type="text" class="gf-form-input max-width-15" ng-model='current.allValue' placeholder="blank = auto"></input>
+        </div>
+        <div class="section">
+          <gf-form-switch class="gf-form"
+                          label="Real-time Query"
+                          label-class="width-10"
+                          checked="current.realtime">
+          </gf-form-switch>
+        </div>
+        <div class="gf-form" ng-if="current.realtime">
+          <span class="gf-form-label width-15">Real-time Query Size</span>
+          <input type="text" class="gf-form-input max-width-10" ng-model='current.realtiemSize' placeholder="default = 100"></input>
+        </div>
+        <div class="gf-form" ng-if="current.realtime">
+          <span class="gf-form-label width-15">Min Input For Real-time Query</span>
+          <input type="text" class="gf-form-input max-width-15" ng-model='current.realtimeMinInput' placeholder="default = 3"></input>
         </div>
       </div>
 
