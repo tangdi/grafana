@@ -287,17 +287,17 @@
         </div>
         <div  ng-if="current.type === 'query'" class="section">
           <gf-form-switch class="gf-form"
-                          label="Real-time Query"
+                          label="Auto-Complete"
                           label-class="width-10"
                           checked="current.realtime">
           </gf-form-switch>
         </div>
         <div class="gf-form" ng-if="current.type === 'query' && current.realtime">
-          <span class="gf-form-label width-15">Real-time Query Size</span>
+          <span class="gf-form-label width-15">Auto-Complete Load Size</span>
           <input type="text" class="gf-form-input max-width-10" ng-model='current.realtiemSize' placeholder="default = 100"></input>
         </div>
         <div class="gf-form" ng-if="current.type === 'query' && current.realtime">
-          <span class="gf-form-label width-15">Min Input For Real-time Query</span>
+          <span class="gf-form-label width-15">Min Input For Auto-Complete</span>
           <input type="text" class="gf-form-input max-width-15" ng-model='current.realtimeMinInput' placeholder="default = 3"></input>
         </div>
       </div>
